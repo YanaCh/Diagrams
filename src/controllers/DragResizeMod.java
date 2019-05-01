@@ -178,6 +178,11 @@ public class DragResizeMod {
 
     }
 
+    public static void ResizerResize(MouseEvent event, Observer observer){
+        final DragResizeMod resizer = new DragResizeMod();
+        resizer.findFig(event, observer);
+    }
+
     private void findFig(MouseEvent event, Observer observer){
         if(currentState.mode ==3) {
             for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {

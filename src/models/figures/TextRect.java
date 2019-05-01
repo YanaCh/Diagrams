@@ -1,5 +1,7 @@
 package models.figures;
 
+import controllers.ControllerImpl;
+import controllers.CurrentState;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -18,6 +20,10 @@ public class TextRect extends Rectangle implements Figures {
 
     private Observer observer;
 
+    private CustomTextArea customTextArea;
+    private CurrentState currentState;
+    private ControllerImpl controller;
+
     public TextRect(double x, double y, double x1, double y1){
 
         this.h = Math.abs(y - y1);
@@ -29,7 +35,26 @@ public class TextRect extends Rectangle implements Figures {
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
         color = Color.GOLD;
+    }
 
+    public TextRect(double x, double y, double x1, double y1, CurrentState currentState, ControllerImpl controller){
+
+        this.h = Math.abs(y - y1);
+        this.w = Math.abs(x - x1);
+        this.x = Math.min(x1, x);
+        this.y = Math.min(y1, y);
+        this.x1 = x+w;
+        this.y1 = y+h;
+        centerX = x + (x1 - x)/2;
+        centerY = y + (y1 - y)/2;
+        color = Color.GOLD;
+
+        this.currentState = currentState;
+        this.controller = controller;
+
+        //customTextArea = new CustomTextArea(x, y,x1 - 20, y1 - 20, null);
+        //currentState.treeSet.add(customTextArea);
+        //controller.setShape(customTextArea, new Text(""));
     }
 
 
@@ -61,6 +86,21 @@ public class TextRect extends Rectangle implements Figures {
         y1 = y+h;
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
+
+        System.out.println("Recalculating");
+
+
+        //if (currentState == null) return;
+        //if (customTextArea == null) return;
+
+        //customTextArea.recalculateFigParams(newX + 20, newY + 20, newH - 40, newW - 40);
+        //customTextArea.setFigParams();
+        //customTextArea.S
+        //currentState.treeSet.remove(customTextArea);
+        //if (true) return;
+        //customTextArea = new CustomTextArea(x, y,x1 - 40, y1 - 40);
+        //currentState.treeSet.add(customTextArea);
+        //controller.setShape(customTextArea, new Text(""));
     }
 
     @Override

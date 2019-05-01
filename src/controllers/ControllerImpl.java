@@ -4,10 +4,7 @@ import javafx.application.Application;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import models.figures.Figures;
-import models.figures.ImageRect;
-import models.figures.TextEllipse;
-import models.figures.TextRect;
+import models.figures.*;
 import models.outline.StrokeConnector;
 import models.outline.StrokeFigure;
 import models.outline.StrokeShape;
@@ -96,6 +93,10 @@ public class ControllerImpl {
         if(figure instanceof TextEllipse)
            changeParams(figure,s.getX()+newW/2,s.getY() + newH/2,
                    newH,newW);
+        if (figure instanceof CustomTextArea){
+            changeParams(figure, newX, newY, newH, newW);
+        }
+
         changeAllConsParams();
     }
 
