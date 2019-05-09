@@ -56,23 +56,6 @@ public class ModesController extends BaseEventHandler {
                 case 3:
                     setActive(false);
                     DragResizeMod.handleDragAndResize(observer);
-                    /*
-                    for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
-                        Figures fig = (Figures) itr.next();
-                        if(fig.isMouseInside(e7vent.getX(),event.getY())){
-                            dragged=true;
-                            draggedFig =fig;
-                            setActive(false);
-                            controller.setStroke(draggedFig);
-                            DragResizeMod.makeResizable(currentState.strokeShape.getShape(),
-                                    currentState.strokeShape.getFigure());
-                            offsetX = event.getX() - draggedFig.getFigX();
-                            offsetY = event.getY() - draggedFig.getFigY();
-                            break;
-                        }
-                        currentState.strokeShape = null;
-                        observer.update();
-                    }*/
                     break;
 
                 case 4:
@@ -91,6 +74,7 @@ public class ModesController extends BaseEventHandler {
                         Figures fig = (Figures) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY())){
                             controller.changeColor(fig);
+                            observer.update();
                             break;
                         }
                     }
@@ -150,34 +134,7 @@ public class ModesController extends BaseEventHandler {
                     break;
 
                 case 3:
-                   /* if (dragged ) {
-                        if (event.getX() - offsetX > 0 && event.getY() - offsetY > 0) {
-                            controller.changeParams(draggedFig,event.getX() - offsetX,
-                                    event.getY() - offsetY,draggedFig.getFigH(),draggedFig.getFigW() );
-                            changeAllConsParams();
 
-                        }
-                        else {
-                            if (event.getX() - offsetX < 0 && event.getY() - offsetY < 0){
-                                controller.changeParams(draggedFig,0,
-                                        0,draggedFig.getFigH(),draggedFig.getFigW() );
-                                changeAllConsParams();
-
-                            }
-                            else if (event.getX() - offsetX  < 0){
-                                controller.changeParams(draggedFig,0,
-                                        event.getY() - offsetY,draggedFig.getFigH(),draggedFig.getFigW() );
-                                changeAllConsParams();
-                            }
-                            else if (event.getY() - offsetY < 0){
-                                controller.changeParams(draggedFig,event.getX() - offsetX,
-                                        0,draggedFig.getFigH(),draggedFig.getFigW() );
-                                changeAllConsParams();
-                            }
-
-                        }
-                    }
-                    */
 
                     break;
 
@@ -275,6 +232,7 @@ public class ModesController extends BaseEventHandler {
                     from = null;
                     to = null;
                     currentState.tempFig = null;
+                    currentState.strokeShape = null;
                     observer.update();
                     break;
 
@@ -298,6 +256,7 @@ public class ModesController extends BaseEventHandler {
                     from = null;
                     to = null;
                     currentState.tempFig = null;
+                    currentState.strokeShape = null;
                     observer.update();
                     break;
 

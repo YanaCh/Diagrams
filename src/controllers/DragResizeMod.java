@@ -3,6 +3,8 @@ package controllers;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import models.figures.Figures;
 import views.EditorView;
@@ -94,6 +96,8 @@ public class DragResizeMod {
 
     private S state = S.DEFAULT;
 
+    private static boolean toDelete = false;
+
     private Node node;
     private Figures figure;
     private OnDragResizeEventListener listener = defaultListener;
@@ -118,6 +122,28 @@ public class DragResizeMod {
     }
 
     private DragResizeMod(){}
+
+    public void makeDeletable(Figures figure, Observer observer){
+
+
+        EditorView.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if ( event.getCode().equals( KeyCode.DELETE ) ){
+                    System.out.println("Delete");
+                    for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
+                        Figures fig = (Figures) itr.next();
+                        if(fig.equals(figure)){
+                            itr.remove();
+                            currentState.strokeShape = null;
+                            observer.update();
+                        }
+                    }
+
+                }
+            }
+        });
+    }
 
     public  void makeResizable(Node node, Figures figure) {
         makeResizable(node, figure,null);
@@ -164,6 +190,7 @@ public class DragResizeMod {
 
     public static void handleDragAndResize(Observer observer){
         final DragResizeMod resizer = new DragResizeMod();
+
         EditorView.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -184,8 +211,9 @@ public class DragResizeMod {
                 Figures fig = (Figures) itr.next();
                 if (fig.isMouseInside(event.getX(), event.getY())) {
                     controller.setStroke(fig);
+                    makeDeletable(currentState.strokeShape.getFigure(), observer);
                     makeResizable(currentState.strokeShape.getShape(),
-                            currentState.strokeShape.getFigure());
+                           currentState.strokeShape.getFigure());
                     break;
                 }
                 currentState.strokeShape = null;

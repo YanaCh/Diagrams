@@ -15,6 +15,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import models.ColorButton;
 import models.figures.Figures;
+import xmlproc.WriteXML;
 
 public class EditorView extends Application implements Observer {
 
@@ -23,6 +24,7 @@ public class EditorView extends Application implements Observer {
     ControllerImpl controller;
     CurrentState currentState;
     public static Pane canvas;
+    public static Scene scene;
     private ColorPicker multiColorButton;
 
 
@@ -36,7 +38,7 @@ public class EditorView extends Application implements Observer {
         primaryStage.setTitle("Use Case Creator ");
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: white");
-        Scene scene = new Scene(root, 1200, 700);
+        scene = new Scene(root, 1200, 700);
         primaryStage.setScene(scene);
 
         MenuBar menuBar = new MenuBar();
@@ -69,10 +71,12 @@ public class EditorView extends Application implements Observer {
         Button btnArrow = new Button("Arrow");
         Button btnText = new Button("Text");
 
+        Button makeXMl = new Button("XML");
+
         Insets insets = new Insets(10);
         toolButtonBar.setPadding(insets);
         toolButtonBar.setOrientation(Orientation.VERTICAL);
-        toolButtonBar.getItems().addAll(btnActor, btnSystem, btnUseCase, btnDrag, btnLine, btnRepaint, btnArrow, btnText);
+        toolButtonBar.getItems().addAll(btnActor, btnSystem, btnUseCase, btnDrag, btnLine, btnRepaint, btnArrow, btnText, makeXMl);
 
         //HBox hBox = new HBox();
         //toolButtonBar.prefWidthProperty().bind(hBox.widthProperty());
@@ -230,6 +234,13 @@ public class EditorView extends Application implements Observer {
             public void handle(javafx.event.ActionEvent event) {
                 currentState.mode = 7;
                 modesController.setActive(true);
+            }
+        });
+        makeXMl.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent event) {
+                WriteXML writeXML = new WriteXML();
+                writeXML.fill();
             }
         });
 
