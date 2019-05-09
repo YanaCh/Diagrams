@@ -159,7 +159,7 @@ public class ModesController extends BaseEventHandler {
                 case 7:
                     dragged=true;
                     endDrag = new Point2D(event.getX(), event.getY());
-                    currentState.tempFig = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
+                    currentState.tempFig = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                     controller.setStroke(currentState.tempFig);
                     controller.setShape(currentState.tempFig, new Text(""));
                     break;
@@ -196,7 +196,7 @@ public class ModesController extends BaseEventHandler {
                     break;
                 case 2:
                     if(dragged) {
-                        TextRect r = new TextRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
+                        TextRect r = new TextRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), currentState, controller);
                         currentState.treeSet.add(r);
                         System.out.println(currentState.treeSet);
                         controller.setShape(r,new Text(""));
@@ -206,14 +206,12 @@ public class ModesController extends BaseEventHandler {
                         dragged = false;
                     }
                     break;
-
                 case 3:
                     if (dragged ) {
                      //   draggedFig = null;
                      //   dragged = false;
                     }
                     break;
-
                 case 4:
                     for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
                         Figures fig = (Figures) itr.next();
@@ -262,7 +260,7 @@ public class ModesController extends BaseEventHandler {
 
                 case 7:
                     if(dragged) {
-                        CustomTextArea r = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
+                        CustomTextArea r = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                         currentState.treeSet.add(r);
                         System.out.println(currentState.treeSet);
                         controller.setShape(r,new Text(""));

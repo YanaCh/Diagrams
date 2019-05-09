@@ -1,6 +1,7 @@
 package models.figures;
 
 import controllers.ControllerImpl;
+import controllers.DragResizeMod;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
@@ -18,7 +19,7 @@ public class CustomTextArea extends TextArea implements Figures {
     private Observer observer;
 
 
-    public CustomTextArea(double x, double y, double x1, double y1){
+    public CustomTextArea(double x, double y, double x1, double y1, Observer observer){
 
         this.h = Math.abs(y - y1);
         this.w = Math.abs(x - x1);
@@ -29,14 +30,14 @@ public class CustomTextArea extends TextArea implements Figures {
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
         setText("Text");
+
         //setMouseTransparent(true);
         //setFocusTraversable(false);
         setOnMousePressed(e -> {
 
         });
         setOnMouseClicked(e -> {
-            ControllerImpl controller = ControllerImpl.getInstance();
-            controller.doDrugAndResize();
+            if (observer != null) DragResizeMod.ResizerResize(e, observer);
             System.out.println("xyi");
         });
 
