@@ -1,13 +1,12 @@
 package models.figures;
 
-import controllers.ControllerImpl;
 import controllers.DragResizeMod;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import views.Observer;
 
@@ -17,6 +16,10 @@ public class CustomTextArea extends TextArea implements Figures {
     private int layer;
 
     private Observer observer;
+
+    private String cssScroll;
+    private String cssGrey;
+    public String cssTransparent;
 
 
     public CustomTextArea(double x, double y, double x1, double y1, Observer observer){
@@ -29,7 +32,11 @@ public class CustomTextArea extends TextArea implements Figures {
         this.y1 = y+h;
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
-        setText("Text");
+
+
+        cssScroll = this.getClass().getResource("/css/ScrollDisable.css").toExternalForm();
+        cssGrey = this.getClass().getResource("/css/GreyTextBackground.css").toExternalForm();
+        cssTransparent = this.getClass().getResource("/css/TransparentTextBackground.css").toExternalForm();
 
         //setMouseTransparent(true);
         //setFocusTraversable(false);
@@ -37,8 +44,8 @@ public class CustomTextArea extends TextArea implements Figures {
 
         });
         setOnMouseClicked(e -> {
-            if (observer != null) DragResizeMod.ResizerResize(e, observer);
-            System.out.println("xyi");
+            if (observer != null) DragResizeMod.ResizerResize(e, observer, this);
+            this.getStylesheets().add(cssGrey);
         });
 
     }
@@ -50,14 +57,11 @@ public class CustomTextArea extends TextArea implements Figures {
         setTranslateY(y);
         setPrefWidth(w);
         setPrefHeight(h);
-       // setWrapText(true);
-        //ScrollBar scrollBar = (ScrollBar) this.lookup(".scroll-bar:vertical");
-        //scrollBar.setDisable(true);
-        //String css = this.getClass().getResource("/css/mycss.css").toExternalForm();
-        //this.getStylesheets().add(css);
-
-
-
+        setWrapText(true);
+        setText("Text");
+        setFont(Font.font("Veranda", FontWeight.MEDIUM, 12));
+        this.getStylesheets().add(cssScroll);
+        this.getStylesheets().add(cssGrey);
 
 
     }
@@ -201,6 +205,7 @@ public class CustomTextArea extends TextArea implements Figures {
     @Override
     public void addShape(Pane canvas) {
         canvas.getChildren().add(this);
+
     }
 
     @Override

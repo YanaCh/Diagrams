@@ -6,6 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import models.figures.CustomText;
+import models.figures.CustomTextArea;
 import models.figures.Figures;
 import views.EditorView;
 import views.Observer;
@@ -205,9 +207,27 @@ public class DragResizeMod {
 
     }
 
-    public static void ResizerResize(MouseEvent event, Observer observer){
+    public static void ResizerResize(MouseEvent event, Observer observer, CustomTextArea textArea){
         final DragResizeMod resizer = new DragResizeMod();
-        resizer.findFig(event, observer);
+        resizer.findTextArea(observer,textArea);
+       // resizer.findFig(event, observer);
+    }
+
+    private void findTextArea(Observer observer, CustomTextArea textArea){
+        for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
+            Figures fig = (Figures) itr.next();
+            if(fig.equals(textArea)){
+                controller.setStroke(fig);
+                makeDeletable(currentState.strokeShape.getFigure(), observer);
+                makeResizable(currentState.strokeShape.getShape(),
+                        currentState.strokeShape.getFigure());
+                break;
+            }
+
+            currentState.strokeShape = null;
+            observer.update();
+        }
+
     }
 
     private void findFig(MouseEvent event, Observer observer){

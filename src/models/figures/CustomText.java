@@ -1,8 +1,6 @@
 package models.figures;
 
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -39,7 +37,7 @@ public class CustomText extends TextRect {
             textArea.setPrefWidth(500);
             textArea.setWrapText(true);
             textArea.setText("YANAAA");
-            String css = this.getClass().getResource("/css/mycss.css").toExternalForm();
+            String css = this.getClass().getResource("/css/ScrollDisable.css").toExternalForm();
             textArea.getStylesheets().add(css);
            // ScrollBar scrollBar = (ScrollBar) textArea.lookup(".scroll-bar:vertical");
            // scrollBar.setDisable(true);
