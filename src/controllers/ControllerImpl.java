@@ -44,14 +44,18 @@ public class ControllerImpl {
         }
         catch (NullPointerException e){
             figure.notifyChanges();
+
+
         }
+
+
     }
 
     private void doShapeSetting(Figures figure, Text text){
         figure.registerObserver(observer);
         figure.setFigColor(observer.getMultiColorButton().getValue());
-        figure.setText(text);
         figure.setFigParams();
+       // figure.setText(text);
         figure.setLayer(currentState.tempLayerVal);
         currentState.tempLayerVal++;
 

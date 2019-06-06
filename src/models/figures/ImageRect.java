@@ -1,5 +1,7 @@
 package models.figures;
 
+import controllers.ControllerImpl;
+import controllers.CurrentState;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
@@ -17,11 +19,17 @@ public class ImageRect extends ImageView implements Figures {
 
     private Image img;
     private double x,y,x1,y1, w, h, centerX, centerY;
+    private double xText,yText,x1Text,y1Text, wText, hText;
+    private Text text;
     private Rectangle2D rect;
     private Color color;
     private int layer;
 
     private Observer observer;
+
+    private CustomTextArea customTextArea;
+    private CurrentState currentState;
+    private ControllerImpl controller;
 
     public ImageRect(double x, double y, double x1, double y1){
 
@@ -29,14 +37,48 @@ public class ImageRect extends ImageView implements Figures {
         this.w = Math.abs(x - x1);
         this.x = Math.min(x1, x);
         this.y = Math.min(y1, y);
-        this.x1 = x+w;
-        this.y1 = y+h;
-        centerX = x + (x1 - x)/2;
-        centerY = y + (y1 - y)/2;
+        this.x1 = this.x+w;
+        this.y1 = this.y+h;
+        centerX = this.x + (this.x1 - this.x)/2;
+        centerY = this.y + (this.y1 - this.y)/2;
 
         this.img = new Image("resources/actorshape.png");
         this.color = Color.MAGENTA;
         setViewport(rect);
+
+    }
+
+    public ImageRect(double x, double y, double x1, double y1, Observer observer){
+
+        this.h = Math.abs(y - y1);
+        this.w = Math.abs(x - x1);
+        this.x = Math.min(x1, x);
+        this.y = Math.min(y1, y);
+        this.x1 = this.x+w;
+        this.y1 = this.y+h;
+        centerX = this.x + (this.x1 - this.x)/2;
+        centerY = this.y + (this.y1 - this.y)/2;
+
+        this.img = new Image("resources/actorshape.png");
+        this.color = Color.MAGENTA;
+        setViewport(rect);
+
+
+        this.currentState = CurrentState.getInstance();
+        this.controller = ControllerImpl.getInstance();
+
+        xText = w/30;
+        yText = h/30;
+        x1Text = w/30;
+        y1Text = h/1.1;
+        hText = 30;
+        wText = x1Text - xText;
+
+
+        customTextArea = new CustomTextArea(this.x, this.y + h,this.x1, this.y1 + 22, observer, this);
+        currentState.treeSet.add(customTextArea);
+        customTextArea.setText("Text");
+        controller.setShape(customTextArea, text);
 
     }
 
@@ -48,6 +90,11 @@ public class ImageRect extends ImageView implements Figures {
         setFitWidth(w);
         setFitHeight(h);
 
+    }
+
+    @Override
+    public boolean isText() {
+        return false;
     }
 
     @Override
@@ -65,6 +112,12 @@ public class ImageRect extends ImageView implements Figures {
         y1 = y+h;
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
+
+        if (currentState == null) return;
+        if (customTextArea == null) return;
+
+        controller.changeParams(customTextArea,newX , newY + h, hText  , x1 - x1Text - newX - xText );
+        //customTextArea.followFig(this);
 
     }
 
@@ -188,7 +241,10 @@ public class ImageRect extends ImageView implements Figures {
 
     @Override
     public void addShape(Pane canvas) {
-        canvas.getChildren().add(this);
+
+        //canvas.getChildren().add(this);
+        if(customTextArea!=null)
+            canvas.getChildren().addAll(this, customTextArea);
     }
 
     @Override

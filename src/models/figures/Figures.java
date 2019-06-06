@@ -67,4 +67,6 @@ public interface Figures  {
 
    void notifyChanges();
 
+   boolean isText();
+
 }

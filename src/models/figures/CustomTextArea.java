@@ -1,7 +1,8 @@
 package models.figures;
 
+import controllers.CurrentState;
 import controllers.DragResizeMod;
-import javafx.scene.control.ScrollBar;
+import javafx.geometry.Point2D;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -9,11 +10,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import views.Observer;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
+import java.util.function.UnaryOperator;
 
 public class CustomTextArea extends TextArea implements Figures {
 
     private double x,y,x1,y1, w, h, centerX, centerY;
     private int layer;
+
+    private Point2D vecFrom;
 
     private Observer observer;
 
@@ -22,7 +28,33 @@ public class CustomTextArea extends TextArea implements Figures {
     public String cssTransparent;
 
 
-    public CustomTextArea(double x, double y, double x1, double y1, Observer observer){
+    private CurrentState currentState = CurrentState.getInstance();
+
+    private UnaryOperator<Change> filter = c -> {
+
+        int caret = c.getCaretPosition();
+        int anchor = c.getAnchor() ;
+
+        if (caret != anchor) {
+            int start = caret ;
+            int end = caret ;
+            String text = c.getControlNewText();
+            while (start > 0 ) start-- ;
+            while (end < text.length()) end++ ;
+            c.setAnchor(start);
+            c.setCaretPosition(end);
+
+
+
+        }
+
+        return c ;
+    };
+
+
+
+
+    public CustomTextArea(double x, double y, double x1, double y1, Observer observer, Figures source){
 
         this.h = Math.abs(y - y1);
         this.w = Math.abs(x - x1);
@@ -33,6 +65,30 @@ public class CustomTextArea extends TextArea implements Figures {
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
 
+        init(source);
+
+    }
+
+    public CustomTextArea(double centerX, double centerY, double w, double h, Figures source, Observer observer){
+
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.w = w;
+        this.h = h;
+        this.x = centerX - w/2;
+        this.y = centerY - h/2;
+
+
+        init(source);
+
+
+    }
+
+    private void init(Figures source){
+
+        vecFrom = new Point2D(source.getFigX() - x, source.getFigY() - y);
+
+
 
         cssScroll = this.getClass().getResource("/css/ScrollDisable.css").toExternalForm();
         cssGrey = this.getClass().getResource("/css/GreyTextBackground.css").toExternalForm();
@@ -40,13 +96,42 @@ public class CustomTextArea extends TextArea implements Figures {
 
         //setMouseTransparent(true);
         //setFocusTraversable(false);
+
+        setFont(Font.font("Lucida Console", FontWeight.MEDIUM, 14));
+
+        TextFormatter<String> formatter = new TextFormatter<>(filter);
+        setTextFormatter(formatter);
         setOnMousePressed(e -> {
 
         });
         setOnMouseClicked(e -> {
             if (observer != null) DragResizeMod.ResizerResize(e, observer, this);
             this.getStylesheets().add(cssGrey);
+
+
+            if(!getSelectedText().equals("") ) {
+                System.out.println("selected text:"
+                        + getSelectedText());
+                currentState.selectedTextArea = this;
+
+            }
+            else
+                currentState.selectedTextArea = null;
+
         });
+    }
+
+
+
+    @Override
+    public boolean isText() {
+        return true;
+    }
+
+    public void followFig(Figures figures){
+        x = figures.getFigX() - vecFrom.getX();
+        y = figures.getFigY() - vecFrom.getY();
+        setFigParams();
 
     }
 
@@ -58,10 +143,12 @@ public class CustomTextArea extends TextArea implements Figures {
         setPrefWidth(w);
         setPrefHeight(h);
         setWrapText(true);
-        setText("Text");
-        setFont(Font.font("Veranda", FontWeight.MEDIUM, 12));
+        //setText("Text");
+
+        //setFont(Font.font("Lucida Console", FontWeight.MEDIUM, 14));
         this.getStylesheets().add(cssScroll);
         this.getStylesheets().add(cssGrey);
+
 
 
     }
@@ -183,13 +270,12 @@ public class CustomTextArea extends TextArea implements Figures {
     @Override
     public void setFigColor(Color c) {
 
-
     }
 
 
     @Override
     public void setText(Text text) {
-
+       // this.setText(text);
     }
 
     public void recalculateSize(double zoomFactor){
@@ -204,7 +290,7 @@ public class CustomTextArea extends TextArea implements Figures {
 
     @Override
     public void addShape(Pane canvas) {
-        canvas.getChildren().add(this);
+      //  canvas.getChildren().add(this);
 
     }
 

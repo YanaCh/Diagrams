@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class TextRect extends Rectangle implements Figures {
 
     protected double x,y,x1,y1, w, h, centerX, centerY;
+    private double xText,yText,x1Text,y1Text, wText, hText;
     protected Color color;
     protected Text text;
     private int layer;
@@ -35,27 +36,44 @@ public class TextRect extends Rectangle implements Figures {
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
         color = Color.GOLD;
+
+        this.currentState = CurrentState.getInstance();
+        this.controller = ControllerImpl.getInstance();
+
+        //customTextArea = new CustomTextArea(0,0,0, 0, null);
+       // customTextArea.setVisible(false);
+
     }
 
-    public TextRect(double x, double y, double x1, double y1, CurrentState currentState, ControllerImpl controller){
+    public TextRect(double x, double y, double x1, double y1, Observer observer){
 
         this.h = Math.abs(y - y1);
         this.w = Math.abs(x - x1);
         this.x = Math.min(x1, x);
         this.y = Math.min(y1, y);
-        this.x1 = x+w;
-        this.y1 = y+h;
+        this.x1 = this.x+w;
+        this.y1 = this.y+h;
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
-        color = Color.GOLD;
 
-        this.currentState = currentState;
-        this.controller = controller;
+        this.currentState = CurrentState.getInstance();
+        this.controller = ControllerImpl.getInstance();
 
-        //customTextArea = new CustomTextArea(x, y,x1 - 20, y1 - 20, null);
-        //currentState.treeSet.add(customTextArea);
-        //controller.setShape(customTextArea, new Text(""));
+        xText = w/30;
+        yText = h/30;
+        x1Text = w/30;
+        y1Text = h/1.1;
+        hText = 30;
+        wText = x1Text - xText;
+
+
+        customTextArea = new CustomTextArea(this.x + xText, this.y + yText,this.x1 - x1Text, this.y1 - y1Text, observer, this);
+        currentState.treeSet.add(customTextArea);
+        customTextArea.setText("Text");
+        controller.setShape(customTextArea, text);
     }
+
+
 
 
 
@@ -87,22 +105,35 @@ public class TextRect extends Rectangle implements Figures {
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
 
-        System.out.println("Recalculating");
+        if (currentState == null) return;
+        if (customTextArea == null) return;
 
+        //controller.changeParams(customTextArea,newX + xText, newY + yText, hText  , x1 - x1Text - newX - xText );
+            customTextArea.followFig(this);
 
-        //if (currentState == null) return;
-        //if (customTextArea == null) return;
-
-        //customTextArea.recalculateFigParams(newX + 20, newY + 20, newH - 40, newW - 40);
-        //customTextArea.setFigParams();
-        //customTextArea.S
-        //currentState.treeSet.remove(customTextArea);
-        //if (true) return;
-        //customTextArea = new CustomTextArea(x, y,x1 - 40, y1 - 40);
-        //currentState.treeSet.add(customTextArea);
-        //controller.setShape(customTextArea, new Text(""));
     }
 
+    public void deleteText(){
+        customTextArea.setDisable(true);
+        customTextArea.setVisible(false);
+        customTextArea = null;
+    }
+
+    @Override
+    public boolean isText() {
+        return false;
+    }
+
+
+    @Override
+    public void setText(Text text) {
+
+        if (customTextArea == null) return;
+        this.text = text;
+
+
+
+    }
     @Override
     public boolean isMouseInside(double mouseX, double mouseY) {
         if(this.contains(mouseX,mouseY))
@@ -212,13 +243,6 @@ public class TextRect extends Rectangle implements Figures {
     }
 
 
-    @Override
-    public void setText(Text text) {
-        this.text = text;
-        this.text.setX(x + (w - text.getLayoutBounds().getWidth())/2);
-        this.text.setY(y + (h  - text.getLayoutBounds().getHeight())/2 );
-
-    }
 
     public void recalculateSize(double zoomFactor){
         w = w* zoomFactor;
@@ -232,9 +256,16 @@ public class TextRect extends Rectangle implements Figures {
 
     @Override
     public void addShape(Pane canvas) {
-        canvas.getChildren().add(this);
-        if(text!=null)
-            canvas.getChildren().addAll(text);
+      //  canvas.getChildren().add(this);
+
+        if(customTextArea!=null)
+            canvas.getChildren().addAll(this, customTextArea);
+         // else {
+
+           // canvas.getChildren().add(this);
+
+       // }
+
     }
 
     @Override

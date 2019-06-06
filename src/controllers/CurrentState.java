@@ -2,6 +2,9 @@ package controllers;
 
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import models.figures.CustomTextArea;
 import models.figures.Figures;
 import models.outline.StrokeShape;
 
@@ -14,6 +17,7 @@ public class CurrentState {
 
     public Figures tempFig;
     public int tempLayerVal = 0;
+    public CustomTextArea selectedTextArea;
     public TreeSet<Figures> treeSet = new TreeSet<Figures>(new Comparator<Figures>() {
         @Override
         public int compare(Figures o1, Figures o2) {
@@ -37,6 +41,7 @@ public class CurrentState {
 
 
     private CurrentState(){
+
        // multiColorButton = new ColorPicker();
        // multiColorButton.setValue(Color.GOLD);
     }
@@ -49,6 +54,8 @@ public class CurrentState {
         return currentState;
 
     }
+
+
 
 
 }

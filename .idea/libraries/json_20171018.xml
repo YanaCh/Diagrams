@@ -2,8 +2,18 @@
   <library name="json-20171018">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/../json-20171018.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../jar_files/javafx-base-11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../jar_files/javafx-controls-11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../jar_files/javafx-graphics-11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../jar_files (1)/jfoenix-1.4.0.jar!/" />
+      <root url="file://$PROJECT_DIR$/../jar_files" />
+      <root url="jar://$PROJECT_DIR$/../controlsfx-8.40.12/controlsfx-8.40.12.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../jar_files" recursive="false" />
+    <jarDirectory url="jar://$PROJECT_DIR$/../jar_files/javafx-base-11.jar!/" recursive="false" />
+    <jarDirectory url="jar://$PROJECT_DIR$/../jar_files/javafx-controls-11.jar!/" recursive="false" />
+    <jarDirectory url="jar://$PROJECT_DIR$/../jar_files/javafx-graphics-11.jar!/" recursive="false" />
   </library>
 </component>

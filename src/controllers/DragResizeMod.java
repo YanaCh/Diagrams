@@ -6,7 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import models.figures.CustomText;
 import models.figures.CustomTextArea;
 import models.figures.Figures;
 import views.EditorView;
@@ -131,7 +130,7 @@ public class DragResizeMod {
         EditorView.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if ( event.getCode().equals( KeyCode.DELETE ) ){
+                if ( event.getCode().equals( KeyCode.DELETE ) && !figure.isText() ){
                     System.out.println("Delete");
                     for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
                         Figures fig = (Figures) itr.next();

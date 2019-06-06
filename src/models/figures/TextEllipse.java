@@ -1,5 +1,7 @@
 package models.figures;
 
+import controllers.ControllerImpl;
+import controllers.CurrentState;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -11,12 +13,18 @@ import java.util.ArrayList;
 
 public class TextEllipse extends Ellipse implements Figures {
 
-   private    double x,y,x1,y1,centerX, centerY, radiusX, radiusY;
+    private double x,y,x1,y1,centerX, centerY, radiusX, radiusY;
     //A2(x,y),B2(x2,y2) vertices of the to
+    private double  wText, hText;
+    private Text text;
     private Color color;
     private int layer;
 
     Observer observer;
+
+    private CustomTextArea customTextArea;
+    private CurrentState currentState;
+    private ControllerImpl controller;
 
     public TextEllipse(double x, double y, double x1, double y1){
 
@@ -32,6 +40,33 @@ public class TextEllipse extends Ellipse implements Figures {
 
     }
 
+    public TextEllipse(double x, double y, double x1, double y1, Observer observer){
+
+        this.centerX = (x + x1)/2;
+        this.centerY = (y + y1)/2;
+        this.radiusX =  Math.abs((x1 - x)/2);
+        this.radiusY = Math.abs((y1 - y))/2;
+        this.x = -radiusX + centerX;
+        this.y = centerY;
+        this.x1 = centerX;
+        this.y1 = -radiusY + centerY;
+        this.color = Color.GREENYELLOW;
+
+        this.currentState = CurrentState.getInstance();
+        this.controller = ControllerImpl.getInstance();
+
+
+        hText = 30;
+        wText = radiusX*2/1.2;
+
+        customTextArea = new CustomTextArea(centerX, centerY, wText, hText, this, observer);
+        currentState.treeSet.add(customTextArea);
+        customTextArea.setText("Text");
+        controller.setShape(customTextArea, new Text(""));
+
+    }
+
+
 
      @Override
      public void setFigParams() {
@@ -44,6 +79,11 @@ public class TextEllipse extends Ellipse implements Figures {
       setRadiusY(radiusY);
 
      }
+
+    @Override
+    public boolean isText() {
+        return false;
+    }
 
     @Override
     public void recalculateFigParams(double newX, double newY, double newH, double newW) {
@@ -65,6 +105,13 @@ public class TextEllipse extends Ellipse implements Figures {
         x1 = centerX;
         y1 = -radiusY + centerY;
         */
+
+        if (currentState == null) return;
+        if (customTextArea == null) return;
+
+        //controller.changeParams(customTextArea,newX + xText, newY + yText, hText  , x1 - x1Text - newX - xText );
+        customTextArea.followFig(this);
+
     }
 
 
@@ -151,7 +198,8 @@ public class TextEllipse extends Ellipse implements Figures {
 
     @Override
     public void setText(Text text) {
-
+        if (customTextArea == null) return;
+        this.text = text;
     }
 
     public void recalculateSize(double zoomFactor){
@@ -166,7 +214,9 @@ public class TextEllipse extends Ellipse implements Figures {
 
     @Override
     public void addShape(Pane canvas) {
-        canvas.getChildren().add(this);
+        //canvas.getChildren().add(this);
+        if(customTextArea!=null)
+            canvas.getChildren().addAll(this, customTextArea);
     }
 
     @Override

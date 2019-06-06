@@ -2,6 +2,8 @@ package views;
 
 import controllers.*;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
@@ -12,10 +14,19 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import models.ColorButton;
+import models.figures.CustomText;
+import models.figures.CustomTextArea;
 import models.figures.Figures;
+import org.controlsfx.dialog.FontSelectorDialog;
 import xmlproc.WriteXML;
+
+import java.sql.SQLOutput;
+
 
 public class EditorView extends Application implements Observer {
 
@@ -26,6 +37,8 @@ public class EditorView extends Application implements Observer {
     public static Pane canvas;
     public static Scene scene;
     private ColorPicker multiColorButton;
+
+    private FontSelectorDialog fontSelectorDialog  = new FontSelectorDialog(null);;
 
 
     @Override
@@ -62,6 +75,8 @@ public class EditorView extends Application implements Observer {
 
         ToolBar toolButtonBar = new ToolBar();
 
+        Button fontButton = new Button("Font");
+
         Button btnActor = new Button("Actor");
         Button btnUseCase = new Button("Use Case");
         Button btnSystem = new Button("System");
@@ -93,27 +108,34 @@ public class EditorView extends Application implements Observer {
         toolColorBar.setOrientation(Orientation.HORIZONTAL);
         Color mainColor = Color.AQUA;
 
+        Color color = Color.rgb(204,255,204);
+
         ColorButton redButton = new ColorButton(Color.RED);
         ColorButton orangeButton = new ColorButton(Color.ORANGE);
         ColorButton yellowButton = new ColorButton(Color.YELLOW);
-        ColorButton blueButton = new ColorButton(Color.BLUE);
-        ColorButton greenButton = new ColorButton(Color.GREEN);
-        ColorButton cyanButton = new ColorButton(Color.CYAN);
-        ColorButton magentaButton = new ColorButton(Color.MAGENTA);
+        ColorButton blueButton = new ColorButton(Color.rgb(204,230,255));
+        ColorButton greenButton = new ColorButton(Color.rgb(204,255,204));
+        ColorButton cyanButton = new ColorButton(Color.rgb(204,255,255));
+        ColorButton magentaButton = new ColorButton(Color.rgb(255,204,255));
         ColorButton whiteButton = new ColorButton(Color.WHITE);
         ColorButton blackButton = new ColorButton(Color.BLACK);
+
 
         multiColorButton.setValue(mainColor);
         multiColorButton.getStyleClass().add("button");
         multiColorButton.setStyle("-fx-color-label-visible: false ;");
 
+        fontButton.setFont(Font.font("Lucida Console",  FontWeight.BOLD, FontPosture.ITALIC,  16));
+        fontButton.setText("Lucida Console 14.0");
+
+
         redButton.setStyle("-fx-background-color: red");
         orangeButton.setStyle("-fx-background-color: orange");
         yellowButton.setStyle("-fx-background-color: yellow");
-        blueButton.setStyle("-fx-background-color: blue");
-        greenButton.setStyle("-fx-background-color: green");
-        cyanButton.setStyle("-fx-background-color: cyan");
-        magentaButton.setStyle("-fx-background-color: magenta");
+        blueButton.setStyle("-fx-background-color: #cce6ff");
+        greenButton.setStyle("-fx-background-color: #ccffcc");
+        cyanButton.setStyle("-fx-background-color: #ccffff");
+        magentaButton.setStyle("-fx-background-color: #ffccff");
         whiteButton.setStyle("-fx-background-color: white");
         blackButton.setStyle("-fx-background-color: black");
 
@@ -137,7 +159,8 @@ public class EditorView extends Application implements Observer {
         blackButton.setPrefWidth(25);
         blackButton.setPrefHeight(25);
 
-        toolColorBar.getItems().addAll(multiColorButton,blackButton,whiteButton,blueButton,magentaButton,cyanButton,greenButton,
+
+        toolColorBar.getItems().addAll(fontButton, multiColorButton,blackButton,whiteButton,blueButton,magentaButton,cyanButton,greenButton,
                 yellowButton,orangeButton,redButton);
         Insets insetsColor = new Insets(10,15, 10, 20);
         toolColorBar.setPadding(insetsColor);
@@ -241,6 +264,39 @@ public class EditorView extends Application implements Observer {
             public void handle(javafx.event.ActionEvent event) {
                 WriteXML writeXML = new WriteXML();
                 writeXML.fill();
+            }
+        });
+
+
+
+
+        fontButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                fontSelectorDialog.setTitle("Select Font");
+                fontSelectorDialog.show();
+
+
+
+            }
+        });
+
+
+        fontSelectorDialog.setOnCloseRequest(new EventHandler<DialogEvent>() {
+            @Override
+            public void handle(DialogEvent event) {
+                if (fontSelectorDialog.getResult() != null) {
+                    Font f = fontSelectorDialog.getResult();
+                    fontButton.setText( f.getName()
+                            + " " + f.getSize());
+                    fontButton.setFont(Font.font(f.getFamily(), 16.0));
+                    if(currentState.selectedTextArea != null)
+                        currentState.selectedTextArea.setFont(f);
+
+
+                    System.out.println(f.toString());
+                }
             }
         });
 

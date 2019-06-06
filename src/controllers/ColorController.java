@@ -35,20 +35,20 @@ public class ColorController implements EventHandler<ActionEvent> {
             mainColor = Color.YELLOW;
             changeButtonColor(mainColor);
         }
-        if (colorButton.getColor() == Color.BLUE) {
-            mainColor = Color.BLUE;
+        if (colorButton.getColor().equals(Color.rgb(204,230,255))) {
+            mainColor = Color.rgb(204,230,255);
             changeButtonColor(mainColor);
         }
-        if (colorButton.getColor() == Color.GREEN) {
-            mainColor = Color.GREEN;
+        if (colorButton.getColor().equals(Color.rgb(204,255,204)) ) {
+            mainColor = Color.rgb(204,255,204);
             changeButtonColor(mainColor);
         }
-        if (colorButton.getColor() == Color.CYAN) {
-            mainColor = Color.CYAN;
+        if (colorButton.getColor().equals(Color.rgb(204,255,255))) {
+            mainColor = Color.rgb(204,255,255);
             changeButtonColor(mainColor);
         }
-        if (colorButton.getColor() == Color.MAGENTA) {
-            mainColor = Color.MAGENTA;
+        if (colorButton.getColor().equals(Color.rgb(255,204,255))) {
+            mainColor = Color.rgb(255,204,255);
             changeButtonColor(mainColor);
         }
         if (colorButton.getColor() == Color.WHITE) {

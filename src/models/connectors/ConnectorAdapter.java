@@ -173,4 +173,9 @@ public class ConnectorAdapter implements Figures  {
 
     }
 
+    @Override
+    public boolean isText() {
+        return false;
+    }
+
 }

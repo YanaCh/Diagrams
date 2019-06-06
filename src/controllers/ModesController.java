@@ -103,11 +103,14 @@ public class ModesController extends BaseEventHandler {
         if(event.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
             switch (currentState.mode){
                 case 0:
-                    dragged=true;
-                    endDrag = new Point2D(event.getX(), event.getY());
-                    currentState.tempFig = new TextEllipse(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
-                    controller.setShape(currentState.tempFig, new Text(""));
-                    controller.setStroke(currentState.tempFig);
+                    if(Math.abs(startDrag.getX() - event.getX()) > 20 &&
+                            Math.abs(startDrag.getY() - event.getY())>20) {
+                        dragged = true;
+                        endDrag = new Point2D(event.getX(), event.getY());
+                        currentState.tempFig = new TextEllipse(startDrag.getX(), startDrag.getY(), event.getX(), event.getY());
+                        controller.setShape(currentState.tempFig, new Text(""));
+                        controller.setStroke(currentState.tempFig);
+                    }
 
 
 
@@ -126,11 +129,14 @@ public class ModesController extends BaseEventHandler {
 
                     break;
                 case 2:
-                    dragged=true;
-                    endDrag = new Point2D(event.getX(), event.getY());
-                    currentState.tempFig = new TextRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
-                    controller.setShape(currentState.tempFig, new Text(""));
-                    controller.setStroke(currentState.tempFig);
+                    if(Math.abs(startDrag.getX() - event.getX()) > 20 &&
+                            Math.abs(startDrag.getY() - event.getY())>20) {
+                        dragged = true;
+                        endDrag = new Point2D(event.getX(), event.getY());
+                        currentState.tempFig = new TextRect(startDrag.getX(), startDrag.getY(), event.getX(), event.getY());
+                        controller.setShape(currentState.tempFig, new Text(""));
+                        controller.setStroke(currentState.tempFig);
+                    }
                     break;
 
                 case 3:
@@ -159,7 +165,7 @@ public class ModesController extends BaseEventHandler {
                 case 7:
                     dragged=true;
                     endDrag = new Point2D(event.getX(), event.getY());
-                    currentState.tempFig = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
+                   // currentState.tempFig = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                     controller.setStroke(currentState.tempFig);
                     controller.setShape(currentState.tempFig, new Text(""));
                     break;
@@ -172,7 +178,7 @@ public class ModesController extends BaseEventHandler {
             switch (currentState.mode){
                 case 0:
                     if(dragged) {
-                        TextEllipse el = new TextEllipse(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
+                        TextEllipse el = new TextEllipse(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                         currentState.treeSet.add(el);
                         System.out.println(currentState.treeSet);
                         controller.setShape(el,new Text(""));
@@ -184,7 +190,7 @@ public class ModesController extends BaseEventHandler {
                     break;
                 case 1:
                     if(dragged) {
-                        ImageRect imgR = new ImageRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
+                        ImageRect imgR = new ImageRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                         currentState.treeSet.add(imgR);
                         System.out.println(currentState.treeSet);
                         controller.setShape(imgR,new Text(""));
@@ -196,10 +202,10 @@ public class ModesController extends BaseEventHandler {
                     break;
                 case 2:
                     if(dragged) {
-                        TextRect r = new TextRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), currentState, controller);
+                        TextRect r = new TextRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                         currentState.treeSet.add(r);
                         System.out.println(currentState.treeSet);
-                        controller.setShape(r,new Text(""));
+                        controller.setShape(r,new Text("Text"));
                         currentState.tempFig = null;
                         startDrag = null;
                         endDrag = null;
@@ -260,10 +266,10 @@ public class ModesController extends BaseEventHandler {
 
                 case 7:
                     if(dragged) {
-                        CustomTextArea r = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
-                        currentState.treeSet.add(r);
+                        //CustomTextArea r = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
+                        //currentState.treeSet.add(r);
                         System.out.println(currentState.treeSet);
-                        controller.setShape(r,new Text(""));
+                       // controller.setShape(r,new Text(""));
                         currentState.tempFig = null;
                         startDrag = null;
                         endDrag = null;
