@@ -1,17 +1,22 @@
 package views;
 
+import com.jfoenix.controls.*;
 import controllers.*;
+import javafx.animation.PathTransition;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
@@ -19,32 +24,32 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import models.ColorButton;
-import models.figures.CustomText;
-import models.figures.CustomTextArea;
 import models.figures.Figures;
 import org.controlsfx.dialog.FontSelectorDialog;
 import xmlproc.WriteXML;
 
-import java.sql.SQLOutput;
 
 
 public class EditorView extends Application implements Observer {
 
-    ColorController colorController;
-    ModesController modesController;
-    ControllerImpl controller;
-    CurrentState currentState;
-    public static Pane canvas;
+    private ColorController colorController;
+    private ModesController modesController;
+    private ControllerImpl controller;
+    private CurrentState currentState;
+    private   Pane canvas;
+    private Sheet sheet;
     public static Scene scene;
-    private ColorPicker multiColorButton;
+    private JFXColorPicker multiColorButton;
 
+    JFXButton plusButton;
     private FontSelectorDialog fontSelectorDialog  = new FontSelectorDialog(null);;
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        multiColorButton = new ColorPicker();
+        multiColorButton = new JFXColorPicker();
+        sheet = new Sheet();
         controller = ControllerImpl.getInstance(this);
         modesController = new ModesController(controller, this);
 
@@ -75,23 +80,24 @@ public class EditorView extends Application implements Observer {
 
         ToolBar toolButtonBar = new ToolBar();
 
-        Button fontButton = new Button("Font");
+        JFXButton fontButton = new JFXButton();
 
-        Button btnActor = new Button("Actor");
-        Button btnUseCase = new Button("Use Case");
-        Button btnSystem = new Button("System");
-        Button btnLine = new Button("ConnectLine");
-        Button btnDrag = new Button("Drag");
-        Button btnRepaint = new Button("Repaint");
-        Button btnArrow = new Button("Arrow");
-        Button btnText = new Button("Text");
+        JFXButton btnActor = new JFXButton("Actor");
+        JFXButton btnUseCase = new JFXButton("Use Case");
+        JFXButton btnSystem = new JFXButton("System");
+        JFXButton btnLine = new JFXButton("ConnectLine");
+        JFXButton btnDrag = new JFXButton("Drag");
+        JFXButton btnRepaint = new JFXButton("Repaint");
+        JFXButton btnArrow = new JFXButton("Arrow");
+        JFXButton btnText = new JFXButton("Text");
 
-        Button makeXMl = new Button("XML");
+        JFXButton makeXMl = new JFXButton("XML");
 
         Insets insets = new Insets(10);
         toolButtonBar.setPadding(insets);
         toolButtonBar.setOrientation(Orientation.VERTICAL);
         toolButtonBar.getItems().addAll(btnActor, btnSystem, btnUseCase, btnDrag, btnLine, btnRepaint, btnArrow, btnText, makeXMl);
+
 
         //HBox hBox = new HBox();
         //toolButtonBar.prefWidthProperty().bind(hBox.widthProperty());
@@ -102,13 +108,13 @@ public class EditorView extends Application implements Observer {
 
         VBox vBox = new VBox();
 
+
+
         currentState = CurrentState.getInstance();
 
         ToolBar toolColorBar = new ToolBar();
         toolColorBar.setOrientation(Orientation.HORIZONTAL);
-        Color mainColor = Color.AQUA;
-
-        Color color = Color.rgb(204,255,204);
+        Color mainColor = Color.rgb(204,255,255);
 
         ColorButton redButton = new ColorButton(Color.RED);
         ColorButton orangeButton = new ColorButton(Color.ORANGE);
@@ -121,9 +127,9 @@ public class EditorView extends Application implements Observer {
         ColorButton blackButton = new ColorButton(Color.BLACK);
 
 
-        multiColorButton.setValue(mainColor);
-        multiColorButton.getStyleClass().add("button");
-        multiColorButton.setStyle("-fx-color-label-visible: false ;");
+         multiColorButton.setValue(mainColor);
+         multiColorButton.getStyleClass().add("button");
+         multiColorButton.setStyle("-fx-color-label-visible: false ;");
 
         fontButton.setFont(Font.font("Lucida Console",  FontWeight.BOLD, FontPosture.ITALIC,  16));
         fontButton.setText("Lucida Console 14.0");
@@ -167,27 +173,81 @@ public class EditorView extends Application implements Observer {
 
         vBox.getChildren().add(toolColorBar);
 
-        ScrollPane scrollPane = new ScrollPane();
+        plusButton = new JFXButton("➕");
+        plusButton.setFont(Font.font("Segoi UI Black", FontWeight.BOLD,18));
+        plusButton.setButtonType(JFXButton.ButtonType.RAISED);
+        plusButton.getStylesheets().add(getClass().getResource("/css/PlusButton.css").toExternalForm());
+        plusButton.getStyleClass().addAll("animated-option-button");
+
+
+       /* ScrollPane scrollPane = new ScrollPane();
         scrollPane.prefWidthProperty().bind(vBox.widthProperty());
         scrollPane.prefHeightProperty().bind(vBox.heightProperty());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
+
+
         canvas = new Pane();
         canvas.setStyle("-fx-background-color: white");
         scrollPane.setContent(canvas);
+
+        canvas.setPrefHeight(10000);
         canvas.prefWidthProperty().bind(scrollPane.widthProperty());
-        canvas.prefHeightProperty().bind(scrollPane.heightProperty());
+        //canvas.prefHeightProperty().bind(scrollPane.heightProperty());
+        */
 
-        vBox.getChildren().add(scrollPane);
+        Tab tab = sheet.createTab(vBox);
+        Tab tab1 = new Sheet().createTab(vBox);
+        Tab tab3 = new Sheet().createTab(vBox);
+        canvas = sheet.canvas;
 
+        JFXTabPane tabPane = new JFXTabPane();
+        tabPane.setSide(Side.TOP);
+        tab.setClosable(false);
+        //tab1.setClosable(true);
+
+
+       // tab1.setContent(new Label("HHHHHHHHHHHHHHH"));
+       // tab3.setContent(new Label("HHHHHHHHHHHHHHH"));
+        tabPane.getTabs().addAll(tab, tab1, tab3);
+
+        tabPane.getTabs().stream().forEach(node->{
+                    ContextMenu contextMenu=new ContextMenu();
+                    MenuItem closeItem=new MenuItem("X");
+
+                    closeItem.setOnAction(actionEvent->{ tabPane.getTabs().remove(node);});
+                    contextMenu.getItems().add(closeItem);
+                    node.setContextMenu(contextMenu);
+                });
+
+
+        vBox.getChildren().add(tabPane);
         splitPane.getItems().add(vBox);
         root.setCenter(splitPane);
 
         primaryStage.show();
 
+
         //////////////////////////////////////////////////////////////////////////////////
 
+
+      /*  if (scrollPane.getSkin() == null) {
+            // Skin is not yet attached, wait until skin is attached to access the scroll bars
+            ChangeListener<Skin<?>> skinChangeListener = new ChangeListener<Skin<?>>() {
+                @Override
+                public void changed(ObservableValue<? extends Skin<?>> observable, Skin<?> oldValue, Skin<?> newValue) {
+                    scrollPane.skinProperty().removeListener(this);
+                    accessScrollBar(scrollPane);
+                }
+            };
+            scrollPane.skinProperty().addListener(skinChangeListener);
+        } else {
+            // Skin is already attached, just access the scroll bars
+            accessScrollBar(scrollPane);
+        }
+
+*/
         colorController = new ColorController(multiColorButton);
 
         redButton.setOnAction(colorController);
@@ -263,7 +323,9 @@ public class EditorView extends Application implements Observer {
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 WriteXML writeXML = new WriteXML();
-                writeXML.fill();
+              //  writeXML.fill();
+                //canvas.setPrefSize(10000, 500000);
+
             }
         });
 
@@ -317,11 +379,45 @@ public class EditorView extends Application implements Observer {
 
     }
 
+
+
+    private void accessScrollBar(ScrollPane scrollPane) {
+        for (Node node : scrollPane.lookupAll(".scroll-bar")) {
+            if (node instanceof ScrollBar) {
+                ScrollBar scrollBar = (ScrollBar) node;
+
+                if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
+
+                }
+                if (scrollBar.getOrientation() == Orientation.VERTICAL) {
+
+                    scrollBar.valueProperty().addListener((observable,  oldValue, newValue) -> {
+                        double value = (Math.abs(newValue.doubleValue() - oldValue.doubleValue()))* 10000;
+                        System.out.println(value);
+                        //plusButton.setTranslateY(plusButton.getLayoutY() - value);
+                        plusButton.setTranslateY((scrollPane.getVvalue() * 10000) );
+                        //scrollPane.setVvalue(0.5);
+
+                         });
+                }
+
+            }
+        }
+    }
+
+
+
+
     public void update() {
         drawMatrix();
         drawFigs();
         drawTempFigs();
 
+    }
+
+    @Override
+    public Pane getCanvas() {
+        return canvas;
     }
 
     private void drawMatrix(){

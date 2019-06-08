@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import models.figures.CustomTextArea;
 import models.figures.Figures;
 import views.EditorView;
@@ -191,8 +192,9 @@ public class DragResizeMod {
 
     public static void handleDragAndResize(Observer observer){
         final DragResizeMod resizer = new DragResizeMod();
+        Pane canvas = observer.getCanvas();
 
-        EditorView.canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+         canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println("Pressed");
