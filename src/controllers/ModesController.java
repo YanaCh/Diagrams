@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import math.GeomCalculations;
 import models.connectors.ConnectorAdapter;
@@ -29,12 +30,16 @@ public class ModesController extends BaseEventHandler {
     private   Figures from, to;
     private ConnectorAdapter adapter;
     private ControllerImpl controller;
+    private SheetManager sheetManager;
 
-    public ModesController(ControllerImpl controller, Observer observer){
+
+    public ModesController( Observer observer){
         dragged = false;
         currentState = CurrentState.getInstance();
-        this.controller = controller;
+        this.controller = ControllerImpl.getInstance();
+        this.sheetManager = SheetManager.getInstance();
         this.observer = observer;
+
     }
 
     @Override
@@ -59,7 +64,7 @@ public class ModesController extends BaseEventHandler {
                     break;
 
                 case 4:
-                    for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
+                    for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
                         Figures fig = (Figures) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY()) &&fig.getType()==2){
                             from = fig;
@@ -70,7 +75,7 @@ public class ModesController extends BaseEventHandler {
                     break;
 
                 case 5:
-                    for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
+                    for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
                         Figures fig = (Figures) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY())){
                             controller.changeColor(fig);
@@ -83,7 +88,7 @@ public class ModesController extends BaseEventHandler {
                     break;
 
                 case 6:
-                    for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
+                    for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
                         Figures fig = (Figures) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY())&& fig.getType()==2){
                             from = fig;
@@ -179,8 +184,8 @@ public class ModesController extends BaseEventHandler {
                 case 0:
                     if(dragged) {
                         TextEllipse el = new TextEllipse(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
-                        currentState.treeSet.add(el);
-                        System.out.println(currentState.treeSet);
+                        sheetManager.currentTreeSet.add(el);
+                        System.out.println(sheetManager.currentTreeSet);
                         controller.setShape(el,new Text(""));
                         currentState.tempFig = null;
                         startDrag = null;
@@ -191,8 +196,8 @@ public class ModesController extends BaseEventHandler {
                 case 1:
                     if(dragged) {
                         ImageRect imgR = new ImageRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
-                        currentState.treeSet.add(imgR);
-                        System.out.println(currentState.treeSet);
+                        sheetManager.currentTreeSet.add(imgR);
+                        System.out.println(sheetManager.currentTreeSet);
                         controller.setShape(imgR,new Text(""));
                         currentState.tempFig = null;
                         startDrag = null;
@@ -203,8 +208,8 @@ public class ModesController extends BaseEventHandler {
                 case 2:
                     if(dragged) {
                         TextRect r = new TextRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
-                        currentState.treeSet.add(r);
-                        System.out.println(currentState.treeSet);
+                        sheetManager.currentTreeSet.add(r);
+                        System.out.println(sheetManager.currentTreeSet);
                         controller.setShape(r,new Text("Text"));
                         currentState.tempFig = null;
                         startDrag = null;
@@ -219,7 +224,7 @@ public class ModesController extends BaseEventHandler {
                     }
                     break;
                 case 4:
-                    for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
+                    for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
                         Figures fig = (Figures) itr.next();
                         System.out.println(fig);
                         if (fig.isMouseInside(event.getX(), event.getY())) {
@@ -230,7 +235,7 @@ public class ModesController extends BaseEventHandler {
                     if(to!=null && to != from && from != null && to.getType() == 2) {
                         MyLine l = new MyLine(startDrag.getX(), startDrag.getY(), endDrag.getX(), endDrag.getY(), from, to);
                         adapter = new ConnectorAdapter(l);
-                        currentState.treeSet.add(adapter);
+                        sheetManager.currentTreeSet.add(adapter);
                         controller.setShape(adapter, new Text(""));
                     }
                     from = null;
@@ -241,7 +246,7 @@ public class ModesController extends BaseEventHandler {
                     break;
 
                 case 6:
-                    for(Iterator itr = currentState.treeSet.descendingIterator();itr.hasNext();){
+                    for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
                         Figures fig = (Figures) itr.next();
                         if (fig.isMouseInside(event.getX(), event.getY()) && fig instanceof TextEllipse){
                             to = fig;
@@ -254,7 +259,7 @@ public class ModesController extends BaseEventHandler {
                         Arrow arrow = new Arrow(startDrag.getX(), startDrag.getY(),
                                 endDrag.getX(), endDrag.getY(), interP, from, (TextEllipse) to);
                         adapter = new ConnectorAdapter(arrow);
-                        currentState.treeSet.add(adapter);
+                        sheetManager.currentTreeSet.add(adapter);
                         controller.setShape(adapter, new Text("<<include>>"));
                     }
                     from = null;
@@ -268,7 +273,7 @@ public class ModesController extends BaseEventHandler {
                     if(dragged) {
                         //CustomTextArea r = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                         //currentState.treeSet.add(r);
-                        System.out.println(currentState.treeSet);
+                        System.out.println(sheetManager.currentTreeSet);
                        // controller.setShape(r,new Text(""));
                         currentState.tempFig = null;
                         startDrag = null;
@@ -283,7 +288,7 @@ public class ModesController extends BaseEventHandler {
     }
 
     private void changeAllConsParams(){
-        for(Figures figure:currentState.treeSet) {
+        for(Figures figure:sheetManager.currentTreeSet) {
             if(figure.getType()==1)
             controller.changeParams(figure,0,0,figure.getFigH(),figure.getFigW());
         }

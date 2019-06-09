@@ -2,6 +2,7 @@ package models.figures;
 
 import controllers.ControllerImpl;
 import controllers.CurrentState;
+import controllers.SheetManager;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -23,6 +24,7 @@ public class TextRect extends Rectangle implements Figures {
 
     private CustomTextArea customTextArea;
     private CurrentState currentState;
+    private SheetManager sheetManager;
     private ControllerImpl controller;
 
     public TextRect(double x, double y, double x1, double y1){
@@ -39,6 +41,7 @@ public class TextRect extends Rectangle implements Figures {
 
         this.currentState = CurrentState.getInstance();
         this.controller = ControllerImpl.getInstance();
+        this.sheetManager = SheetManager.getInstance();
 
         //customTextArea = new CustomTextArea(0,0,0, 0, null);
        // customTextArea.setVisible(false);
@@ -58,6 +61,7 @@ public class TextRect extends Rectangle implements Figures {
 
         this.currentState = CurrentState.getInstance();
         this.controller = ControllerImpl.getInstance();
+        this.sheetManager = SheetManager.getInstance();
 
         xText = w/30;
         yText = h/30;
@@ -68,7 +72,7 @@ public class TextRect extends Rectangle implements Figures {
 
 
         customTextArea = new CustomTextArea(this.x + xText, this.y + yText,this.x1 - x1Text, this.y1 - y1Text, observer, this);
-        currentState.treeSet.add(customTextArea);
+        sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
         controller.setShape(customTextArea, text);
     }

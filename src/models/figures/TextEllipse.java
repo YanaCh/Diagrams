@@ -2,6 +2,7 @@ package models.figures;
 
 import controllers.ControllerImpl;
 import controllers.CurrentState;
+import controllers.SheetManager;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -23,7 +24,7 @@ public class TextEllipse extends Ellipse implements Figures {
     Observer observer;
 
     private CustomTextArea customTextArea;
-    private CurrentState currentState;
+    private SheetManager sheetManager;
     private ControllerImpl controller;
 
     public TextEllipse(double x, double y, double x1, double y1){
@@ -52,7 +53,7 @@ public class TextEllipse extends Ellipse implements Figures {
         this.y1 = -radiusY + centerY;
         this.color = Color.GREENYELLOW;
 
-        this.currentState = CurrentState.getInstance();
+        this.sheetManager = SheetManager.getInstance();
         this.controller = ControllerImpl.getInstance();
 
 
@@ -60,7 +61,7 @@ public class TextEllipse extends Ellipse implements Figures {
         wText = radiusX*2/1.2;
 
         customTextArea = new CustomTextArea(centerX, centerY, wText, hText, this, observer);
-        currentState.treeSet.add(customTextArea);
+        sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
         controller.setShape(customTextArea, new Text(""));
 
@@ -106,7 +107,7 @@ public class TextEllipse extends Ellipse implements Figures {
         y1 = -radiusY + centerY;
         */
 
-        if (currentState == null) return;
+        if (sheetManager == null) return;
         if (customTextArea == null) return;
 
         //controller.changeParams(customTextArea,newX + xText, newY + yText, hText  , x1 - x1Text - newX - xText );

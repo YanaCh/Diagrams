@@ -18,6 +18,7 @@ public class ControllerImpl {
     private static ControllerImpl controller;
     private Observer observer;
     CurrentState currentState = CurrentState.getInstance();
+    SheetManager sheetManager = SheetManager.getInstance();
 
     private ControllerImpl(Observer observer){
         this.observer = observer;
@@ -121,13 +122,13 @@ public class ControllerImpl {
     }
 
     private void changeAllConsParams(){
-        for(Figures figure:currentState.treeSet) {
+        for(Figures figure:sheetManager.currentTreeSet) {
             if(figure.getType()==1)
                 changeParams(figure,0,0,0,0);
         }
     }
 
-    public void doDrugAndResize() {
-        DragResizeMod.handleDragAndResize(observer);
-    }
+  //  public void doDrugAndResize() {
+  //      DragResizeMod.handleDragAndResize(observer);
+   // }
 }

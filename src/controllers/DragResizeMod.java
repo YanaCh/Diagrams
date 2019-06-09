@@ -105,6 +105,7 @@ public class DragResizeMod {
     private OnDragResizeEventListener listener = defaultListener;
     public static boolean wasCalled = false;
     private CurrentState  currentState = CurrentState.getInstance();
+    private SheetManager sheetManager = SheetManager.getInstance();
     private ControllerImpl controller = ControllerImpl.getInstance();
 
     private static final int MARGIN = 10;
@@ -133,7 +134,7 @@ public class DragResizeMod {
             public void handle(KeyEvent event) {
                 if ( event.getCode().equals( KeyCode.DELETE ) && !figure.isText() ){
                     System.out.println("Delete");
-                    for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
+                    for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
                         Figures fig = (Figures) itr.next();
                         if(fig.equals(figure)){
                             itr.remove();
@@ -192,9 +193,10 @@ public class DragResizeMod {
 
     public static void handleDragAndResize(Observer observer){
         final DragResizeMod resizer = new DragResizeMod();
-        Pane canvas = observer.getCanvas();
+       // Pane canvas = observer.getCanvas();
+        SheetManager sheetManager = SheetManager.getInstance();
 
-         canvas.setOnMousePressed(new EventHandler<MouseEvent>() {
+         sheetManager.currentCanvas.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println("Pressed");
@@ -215,7 +217,7 @@ public class DragResizeMod {
     }
 
     private void findTextArea(Observer observer, CustomTextArea textArea){
-        for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
+        for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
             Figures fig = (Figures) itr.next();
             if(fig.equals(textArea)){
                 controller.setStroke(fig);
@@ -233,7 +235,7 @@ public class DragResizeMod {
 
     private void findFig(MouseEvent event, Observer observer){
         if(currentState.mode ==3) {
-            for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
+            for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
                 Figures fig = (Figures) itr.next();
                 if (fig.isMouseInside(event.getX(), event.getY())) {
                     controller.setStroke(fig);
@@ -250,7 +252,7 @@ public class DragResizeMod {
 
     private boolean isMultiLayer(MouseEvent event){
         int count = 0;
-            for (Iterator itr = currentState.treeSet.descendingIterator(); itr.hasNext(); ) {
+            for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
                 Figures fig = (Figures) itr.next();
                 if (fig.isMouseInside(event.getX(), event.getY()))
                     count++;

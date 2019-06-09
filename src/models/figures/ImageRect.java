@@ -2,6 +2,7 @@ package models.figures;
 
 import controllers.ControllerImpl;
 import controllers.CurrentState;
+import controllers.SheetManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.Light;
 import javafx.scene.effect.Lighting;
@@ -28,7 +29,7 @@ public class ImageRect extends ImageView implements Figures {
     private Observer observer;
 
     private CustomTextArea customTextArea;
-    private CurrentState currentState;
+    private SheetManager sheetManager;
     private ControllerImpl controller;
 
     public ImageRect(double x, double y, double x1, double y1){
@@ -64,7 +65,7 @@ public class ImageRect extends ImageView implements Figures {
         setViewport(rect);
 
 
-        this.currentState = CurrentState.getInstance();
+        this.sheetManager = SheetManager.getInstance();
         this.controller = ControllerImpl.getInstance();
 
         xText = w/30;
@@ -76,7 +77,7 @@ public class ImageRect extends ImageView implements Figures {
 
 
         customTextArea = new CustomTextArea(this.x, this.y + h,this.x1, this.y1 + 22, observer, this);
-        currentState.treeSet.add(customTextArea);
+        sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
         controller.setShape(customTextArea, text);
 
@@ -113,7 +114,7 @@ public class ImageRect extends ImageView implements Figures {
         centerX = x + (x1 - x)/2;
         centerY = y + (y1 - y)/2;
 
-        if (currentState == null) return;
+        if (sheetManager == null) return;
         if (customTextArea == null) return;
 
         controller.changeParams(customTextArea,newX , newY + h, hText  , x1 - x1Text - newX - xText );

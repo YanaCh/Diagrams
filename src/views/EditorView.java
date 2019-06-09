@@ -2,15 +2,12 @@ package views;
 
 import com.jfoenix.controls.*;
 import controllers.*;
-import javafx.animation.PathTransition;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -26,7 +23,7 @@ import javafx.stage.Stage;
 import models.ColorButton;
 import models.figures.Figures;
 import org.controlsfx.dialog.FontSelectorDialog;
-import xmlproc.WriteXML;
+
 
 
 
@@ -36,10 +33,11 @@ public class EditorView extends Application implements Observer {
     private ModesController modesController;
     private ControllerImpl controller;
     private CurrentState currentState;
+    private SheetManager sheetManager;
     private   Pane canvas;
-    private Sheet sheet;
     public static Scene scene;
     private JFXColorPicker multiColorButton;
+    private Sheet tab;
 
     JFXButton plusButton;
     private FontSelectorDialog fontSelectorDialog  = new FontSelectorDialog(null);;
@@ -49,9 +47,11 @@ public class EditorView extends Application implements Observer {
     public void start(Stage primaryStage) throws Exception {
 
         multiColorButton = new JFXColorPicker();
-        sheet = new Sheet();
         controller = ControllerImpl.getInstance(this);
-        modesController = new ModesController(controller, this);
+        currentState = CurrentState.getInstance();
+        sheetManager = SheetManager.getInstance();
+        modesController = new ModesController( this);
+
 
         primaryStage.setTitle("Use Case Creator ");
         BorderPane root = new BorderPane();
@@ -108,9 +108,6 @@ public class EditorView extends Application implements Observer {
 
         VBox vBox = new VBox();
 
-
-
-        currentState = CurrentState.getInstance();
 
         ToolBar toolColorBar = new ToolBar();
         toolColorBar.setOrientation(Orientation.HORIZONTAL);
@@ -197,32 +194,30 @@ public class EditorView extends Application implements Observer {
         //canvas.prefHeightProperty().bind(scrollPane.heightProperty());
         */
 
-        Tab tab = sheet.createTab(vBox);
-        Tab tab1 = new Sheet().createTab(vBox);
-        Tab tab3 = new Sheet().createTab(vBox);
-        canvas = sheet.canvas;
-
-        JFXTabPane tabPane = new JFXTabPane();
-        tabPane.setSide(Side.TOP);
-        tab.setClosable(false);
-        //tab1.setClosable(true);
 
 
-       // tab1.setContent(new Label("HHHHHHHHHHHHHHH"));
-       // tab3.setContent(new Label("HHHHHHHHHHHHHHH"));
-        tabPane.getTabs().addAll(tab, tab1, tab3);
+        tab =  new Sheet(vBox, "sheet 1", modesController, this);
+        sheetManager.currentSheet = tab;
 
-        tabPane.getTabs().stream().forEach(node->{
+        Sheet tab1 = new Sheet(vBox, "sheet 2", modesController, this);
+        Sheet tab3 = new Sheet(vBox, "sheet 3", modesController, this);
+
+        sheetManager.tabPane.setSide(Side.TOP);
+        sheetManager.tabPane.getTabs().addAll(tab, tab1, tab3);
+
+        sheetManager.tabPane.getTabs().stream().forEach(node->{
+
+
                     ContextMenu contextMenu=new ContextMenu();
                     MenuItem closeItem=new MenuItem("X");
 
-                    closeItem.setOnAction(actionEvent->{ tabPane.getTabs().remove(node);});
+                    closeItem.setOnAction(actionEvent->{ sheetManager.tabPane.getTabs().remove(node);});
                     contextMenu.getItems().add(closeItem);
                     node.setContextMenu(contextMenu);
                 });
 
 
-        vBox.getChildren().add(tabPane);
+        vBox.getChildren().add(sheetManager.tabPane);
         splitPane.getItems().add(vBox);
         root.setCenter(splitPane);
 
@@ -322,9 +317,7 @@ public class EditorView extends Application implements Observer {
         makeXMl.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
-                WriteXML writeXML = new WriteXML();
-              //  writeXML.fill();
-                //canvas.setPrefSize(10000, 500000);
+
 
             }
         });
@@ -362,7 +355,7 @@ public class EditorView extends Application implements Observer {
             }
         });
 
-        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, modesController);
+       /* canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, modesController);
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, modesController);
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, modesController);
 
@@ -376,7 +369,7 @@ public class EditorView extends Application implements Observer {
            update();
         });
 
-
+*/
     }
 
 
@@ -409,9 +402,10 @@ public class EditorView extends Application implements Observer {
 
 
     public void update() {
-        drawMatrix();
-        drawFigs();
-        drawTempFigs();
+        sheetManager.currentSheet.update();
+       // drawMatrix();
+      //  drawFigs();
+      //  drawTempFigs();
 
     }
 
@@ -456,8 +450,8 @@ public class EditorView extends Application implements Observer {
 
     private void drawFigs(){
 
-        for (Figures figure: currentState.treeSet)
-            figure.addShape(canvas);
+       // for (Figures figure: currentState.treeSet)
+        //    figure.addShape(canvas);
 
     }
 
