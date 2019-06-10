@@ -4,17 +4,16 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import models.connectors.Connectors;
-import models.figures.Figures;
+import models.figures.Figure;
 import views.Observer;
 
 public class ConOutline extends Line implements OutlineInterface {
-    private Figures connector;
+    private Figure connector;
     private Circle circle,circle1;
     private double x,y,x1,y1;
     private Group group;
 
-    public ConOutline(Figures connector){
+    public ConOutline(Figure connector){
         this.connector = connector;
         group = new Group();
     }

@@ -1,19 +1,18 @@
 package controllers;
 
-import javafx.application.Application;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.paint.Color;
+import models.figures.Figure;
 import javafx.scene.text.Text;
 import models.figures.*;
 import models.outline.StrokeConnector;
 import models.outline.StrokeFigure;
 import models.outline.StrokeShape;
-import views.EditorView;
 import views.Observer;
+
+import java.io.Serializable;
 
 import static javafx.application.Application.launch;
 
-public class ControllerImpl {
+public class ControllerImpl implements Serializable {
 
     private static ControllerImpl controller;
     private Observer observer;
@@ -39,7 +38,7 @@ public class ControllerImpl {
             return null;
    }
 
-    public void setShape(Figures figure, Text text) {
+    public void setShape(Figure figure, Text text) {
         try {
             doShapeSetting(figure,text);
         }
@@ -52,7 +51,7 @@ public class ControllerImpl {
 
     }
 
-    private void doShapeSetting(Figures figure, Text text){
+    private void doShapeSetting(Figure figure, Text text){
         figure.registerObserver(observer);
         figure.setFigColor(observer.getMultiColorButton().getValue());
         figure.setFigParams();
@@ -62,7 +61,7 @@ public class ControllerImpl {
 
     }
 
-    public void setStroke(Figures figure) {
+    public void setStroke(Figure figure) {
            try{
                doStrokeSetting(figure);
            }
@@ -71,7 +70,7 @@ public class ControllerImpl {
            }
     }
 
-    private void doStrokeSetting(Figures figure){
+    private void doStrokeSetting(Figure figure){
         if (figure.getType() == 2)
             currentState.strokeShape = new StrokeFigure(figure);
         else
@@ -83,13 +82,13 @@ public class ControllerImpl {
 
     }
 
-    public void changeParams(Figures figure, double newX, double newY, double newH, double newW) {
+    public void changeParams(Figure figure, double newX, double newY, double newH, double newW) {
         figure.recalculateFigParams(newX, newY,newH, newW);
         figure.setFigParams();
 
     }
 
-    public void changeStrokeParams(Figures figure, double newX, double newY, double newH, double newW){
+    public void changeStrokeParams(Figure figure, double newX, double newY, double newH, double newW){
         StrokeShape s = currentState.strokeShape;
         s.changeParams(newX,newY,newH,newW);
         s.setParams();
@@ -105,24 +104,24 @@ public class ControllerImpl {
         changeAllConsParams();
     }
 
-    public void changeColor(Figures figure) {
+    public void changeColor(Figure figure) {
         figure.setFigColor(observer.getMultiColorButton().getValue());
         figure.setFigParams();
 
     }
 
-    public void setFigH(Figures figure,double h) {
+    public void setFigH(Figure figure, double h) {
         figure.setFigH(h);
         figure.setFigParams();
     }
 
-    public void setFigW(Figures figure,double w) {
+    public void setFigW(Figure figure, double w) {
             figure.setFigW(w);
             figure.setFigParams();
     }
 
     private void changeAllConsParams(){
-        for(Figures figure:sheetManager.currentTreeSet) {
+        for(Figure figure:sheetManager.currentTreeSet) {
             if(figure.getType()==1)
                 changeParams(figure,0,0,0,0);
         }

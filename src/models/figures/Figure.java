@@ -5,7 +5,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import views.Observer;
 
-public interface Figures  {
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "figure")
+public interface Figure {
 
    double getFigX();
 
@@ -68,5 +76,7 @@ public interface Figures  {
    void notifyChanges();
 
    boolean isText();
+
+   Figure getSource();
 
 }

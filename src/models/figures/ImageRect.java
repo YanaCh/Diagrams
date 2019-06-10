@@ -1,7 +1,6 @@
 package models.figures;
 
 import controllers.ControllerImpl;
-import controllers.CurrentState;
 import controllers.SheetManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.Light;
@@ -11,26 +10,26 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import models.connectors.Connectors;
 import views.Observer;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class ImageRect extends ImageView implements Figures {
+public class ImageRect extends ImageView implements Figure, Serializable {
 
-    private Image img;
+    private transient Image img;
     private double x,y,x1,y1, w, h, centerX, centerY;
     private double xText,yText,x1Text,y1Text, wText, hText;
     private Text text;
     private Rectangle2D rect;
-    private Color color;
+    private transient Color color;
+    private String colorRGB;
     private int layer;
 
-    private Observer observer;
+    private transient Observer observer;
 
     private CustomTextArea customTextArea;
-    private SheetManager sheetManager;
-    private ControllerImpl controller;
+    private transient SheetManager sheetManager;
+    private transient ControllerImpl controller;
 
     public ImageRect(double x, double y, double x1, double y1){
 
@@ -47,6 +46,14 @@ public class ImageRect extends ImageView implements Figures {
         this.color = Color.MAGENTA;
         setViewport(rect);
 
+    }
+
+    public static String toRGBCode( Color color )
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
     }
 
     public ImageRect(double x, double y, double x1, double y1, Observer observer){
@@ -227,7 +234,12 @@ public class ImageRect extends ImageView implements Figures {
 
     public void setFigColor(Color c) {
         this.color = c;
+        colorRGB = toRGBCode(color);
 
+    }
+
+    public Figure getSource() {
+        return null;
     }
 
     public void recalculateSize(double zoomFactor){

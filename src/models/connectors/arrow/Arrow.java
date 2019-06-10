@@ -7,24 +7,28 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import math.GeomCalculations;
+import math.Vector2;
 import models.connectors.Connectors;
-import models.figures.Figures;
+import models.figures.Figure;
 import models.figures.TextEllipse;
 import views.Observer;
 
-public class Arrow extends Group implements Connectors {
+import java.io.Serializable;
+
+public class Arrow extends Group implements Connectors, Serializable {
 
    private double x, y, x1, y1;
-   private Point2D interPoint;
-   private Point2D vecTo;
-   private Point2D vecFrom;
+   private Vector2 interPoint;
+   private Vector2 vecTo;
+   private Vector2 vecFrom;
    private Text text;
-   private Line line;
-   private Line arrow1;
-   private Line arrow2;
+   private transient Line line;
+   private transient Line arrow1;
+   private transient Line arrow2;
    private TextEllipse to;
-   private Figures from;
-   private Color color;
+   private Figure from;
+   private transient Color color;
+   private String colorRGB;
    private int layer;
 
    private ArrowCalculations arrowCalculations;
@@ -48,7 +52,7 @@ public class Arrow extends Group implements Connectors {
 
    }
 
-   public Arrow(double x, double y, double x1, double y1, Point2D interPoint, Figures from,
+   public Arrow(double x, double y, double x1, double y1, Vector2 interPoint, Figure from,
                 TextEllipse ellipTo){
 
        this.x = x;
@@ -62,17 +66,25 @@ public class Arrow extends Group implements Connectors {
        this.to = ellipTo;
        this.from = from;
 
-       vecFrom = new Point2D(from.getCenterX()- x, from.getCenterY() - y);
-       vecTo = new Point2D(to.getCenterX()- x1, to.getCenterY() - y1);
+       vecFrom = new Vector2(from.getCenterX()- x, from.getCenterY() - y);
+       vecTo = new Vector2(to.getCenterX()- x1, to.getCenterY() - y1);
 
        arrowCalculations = new ReleasedArrow(this);
        arrowCalculations.calculate();
 
    }
 
+    public static String toRGBCode( Color color )
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
+    }
 
     public void setColor(Color c){
         color = c;
+        colorRGB = toRGBCode(c);
         line.setStroke(c);
         arrow1.setStroke(c);
         arrow2.setStroke(c);
@@ -116,8 +128,8 @@ public class Arrow extends Group implements Connectors {
         y = from.getCenterY() - vecFrom.getY();
         x1 = to.getCenterX() - vecTo.getX();
         y1 = to.getCenterY() - vecTo.getY();
-        interPoint = GeomCalculations.interactionPointsWithEllipse(new Point2D(x, y),
-                new Point2D(x1, y1), to);
+        interPoint = GeomCalculations.interactionPointsWithEllipse(new Vector2(x, y),
+                new Vector2(x1, y1), to);
 
         arrowCalculations.calculate();
 
@@ -136,8 +148,8 @@ public class Arrow extends Group implements Connectors {
 
             }
             try {
-                text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
-                text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
+                //text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
+               // text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
             }
 
             catch (NullPointerException e){
@@ -147,17 +159,17 @@ public class Arrow extends Group implements Connectors {
 
             }
         if(count<1) {
-            this.getChildren().addAll(arrow1, arrow2, line, text);
+            this.getChildren().addAll(arrow1, arrow2, line);
             count++;
         }
     }
 
 
-    public Point2D getInterPoint() {
+    public Vector2 getInterPoint() {
         return interPoint;
     }
 
-    public void setInterPoint(Point2D interPoint) {
+    public void setInterPoint(Vector2 interPoint) {
         this.interPoint = interPoint;
     }
 
@@ -231,6 +243,12 @@ public class Arrow extends Group implements Connectors {
     public int getType() {
         return 1;
     }
+
+    public Figure getFrom() {
+        return from;
+    }
+
+
 
     private void notifyChanges(){
         observer.update();

@@ -10,42 +10,25 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import models.figures.Figures;
+import models.figures.Figure;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-public class Sheet extends Tab{
+public class Sheet extends Tab implements Serializable {
 
-    private CurrentState currentState;
-    private ModesController modesController;
-    private SheetManager sheetManager;
+    private transient CurrentState currentState;
+    private transient ModesController modesController;
+    private transient SheetManager sheetManager;
     public String name;
-    public ScrollPane scrollPane;
-    public Pane canvas;
-
-    public TreeSet<Figures> treeSet = new TreeSet<Figures>(new Comparator<Figures>() {
-        @Override
-
-        public int compare(Figures o1, Figures o2) {
-
-            if(o1.getPriority()>o2.getPriority())
-                return 1;
-            else if(o1.getPriority()<o2.getPriority())
-                return -1;
-            else {
-                if(o1.getLayer() < o2.getLayer())
-                    return 1;
-                else
-                    return -1;
-            }
-        }
-    });
+    public transient ScrollPane scrollPane;
+    public transient Pane canvas;
 
 
+    public TreeSet<Figure> treeSet = new TreeSet<Figure>(new FigureComparator());
 
-
-    public Sheet(VBox vBox, String name, ModesController modesController, Observer observer){
+    public Sheet(VBox vBox, String name, ModesController modesController){
         this.sheetManager = SheetManager.getInstance();
         this.modesController = modesController;
         currentState = CurrentState.getInstance();
@@ -124,7 +107,7 @@ public class Sheet extends Tab{
 
     private void drawFigs(){
 
-        for (Figures figure: sheetManager.currentTreeSet)
+        for (Figure figure: sheetManager.currentTreeSet)
             figure.addShape(canvas);
 
     }

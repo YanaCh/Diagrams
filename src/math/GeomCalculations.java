@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class GeomCalculations extends  Application {
 
-    private static double[] makeLineEquation(Point2D a1, Point2D a2){
+    private static double[] makeLineEquation(Vector2 a1, Vector2 a2){
         double A = a1.getY() - a2.getY();
         double B = a2.getX() - a1.getX();
         double C = a1.getX() * a2.getY() - a2.getX() * a1.getY();
@@ -21,7 +21,7 @@ public class GeomCalculations extends  Application {
         return new double[] {A, B, C};
     }
 
-    private static boolean isSegmentCrossesEllipse(Point2D a1, Point2D a2, Ellipse ellipse){
+    private static boolean isSegmentCrossesEllipse(Vector2 a1, Vector2 a2, Ellipse ellipse){
         //(x1-x0)^2/a^2 + (y1-y0)^2/b^2 < 1
         // (x2-x0)^2/a^2 + (y2-y0)^2/b^2 > 1
         double x1 = Math.pow(a1.getX() - ellipse.getCenterX(),2) / Math.pow(ellipse.getRadiusX(),2);
@@ -40,8 +40,8 @@ public class GeomCalculations extends  Application {
     }
 
 
-    private static Point2D pointBelongsSegment(Point2D interP1, Point2D interP2, Point2D segP1,
-                                        Point2D segP2){
+    private static Vector2 pointBelongsSegment(Vector2 interP1, Vector2 interP2, Vector2 segP1,
+                                               Vector2 segP2){
 
         Vector v1 = new Vector(new double[]{interP1.getX(),interP1.getY()},
                   new double[]{segP1.getX(),segP1.getY()});
@@ -54,7 +54,7 @@ public class GeomCalculations extends  Application {
 
     }
 
-    public static Point2D interactionPointsWithEllipse(Point2D a1, Point2D a2, Ellipse ellipse){
+    public static Vector2 interactionPointsWithEllipse(Vector2 a1, Vector2 a2, Ellipse ellipse){
 
         double [] coefs = makeLineEquation(a1, a2);
         double A = coefs[0];
@@ -112,8 +112,8 @@ public class GeomCalculations extends  Application {
                 System.out.println("x1 y1 = " + x1 + " " + y1 + " x2 y2 = " + x2 + " " + y2);
 
             }
-            Point2D interactionP = pointBelongsSegment(new Point2D(x1,y1),
-                    new Point2D(x2,y2),a1,a2);
+            Vector2 interactionP = pointBelongsSegment(new Vector2(x1,y1),
+                    new Vector2(x2,y2),a1,a2);
             System.out.println("interaction point is x: " + interactionP.getX()
                     + " y: " + interactionP.getY());
             return interactionP;
@@ -126,7 +126,7 @@ public class GeomCalculations extends  Application {
 
     }
 
-    private static Point2D interactionPointWithOX(Point2D a1, Point2D a2){
+    private static Vector2 interactionPointWithOX(Vector2 a1, Vector2 a2){
         double [] coefs = makeLineEquation(a1, a2);
         double A = coefs[0];
         double B = coefs [1];
@@ -135,7 +135,7 @@ public class GeomCalculations extends  Application {
         if(A != 0){
             y = 0;
             x = -C/A;
-            return new Point2D(x,y);
+            return new Vector2(x,y);
 
         }
         else
@@ -144,8 +144,8 @@ public class GeomCalculations extends  Application {
     }
 
     //need to be tested
-    public static double angleLineOX(Point2D a1, Point2D a2){
-        Point2D interactP = interactionPointWithOX(a1,a2);;
+    public static double angleLineOX(Vector2 a1, Vector2 a2){
+        Vector2 interactP = interactionPointWithOX(a1,a2);;
         double hypotenuseLen ;
         try {
              hypotenuseLen = Math.hypot(a2.getX() - interactP.getX(), a2.getY() - interactP.getY());
@@ -261,8 +261,8 @@ public class GeomCalculations extends  Application {
         ellipse.setRadiusX(3);
         ellipse.setRadiusY(2);
 
-        Point2D  a1 = new Point2D(-2,1); //center of first ellipse
-        Point2D  a2 = new Point2D(3,1); //center of second ellipse
+        Vector2  a1 = new Vector2(-2,1); //center of first ellipse
+        Vector2  a2 = new Vector2(3,1); //center of second ellipse
 
         interactionPointsWithEllipse(a1, a2, ellipse);
 

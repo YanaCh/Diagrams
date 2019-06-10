@@ -1,16 +1,19 @@
 package models.outline;
 
+import models.figures.Figure;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import models.figures.*;
 
-public class StrokeFigure extends StrokeShape {
+import java.io.Serializable;
+
+public class StrokeFigure extends StrokeShape implements Serializable {
     private Rectangle rectangle;
     private double x2,y2,x3,y3,w,h;
     private Circle circle2, circle3;
 
-    public StrokeFigure(Figures figure) {
+    public StrokeFigure(Figure figure) {
         super(figure);
         rectangle = new Rectangle();
         super.shape = rectangle;

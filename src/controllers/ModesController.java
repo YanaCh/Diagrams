@@ -1,33 +1,34 @@
 package controllers;
 
+import math.Vector2;
+import models.figures.Figure;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import math.GeomCalculations;
 import models.connectors.ConnectorAdapter;
 import models.connectors.MyLine;
 import models.connectors.arrow.Arrow;
 import models.figures.*;
-import views.EditorView;
 import views.Observer;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public class ModesController extends BaseEventHandler {
+public class ModesController extends BaseEventHandler implements Serializable {
 
-    private Point2D startDrag, endDrag;
+    private Vector2 startDrag, endDrag;
     private CurrentState currentState;
     private Observer observer;
 
     //For dragging
-    private Figures draggedFig;
+    private Figure draggedFig;
     private boolean dragged;
     private double offsetX;
     private double offsetY;
 
     //For lines
-    private   Figures from, to;
+    private Figure from, to;
     private ConnectorAdapter adapter;
     private ControllerImpl controller;
     private SheetManager sheetManager;
@@ -48,14 +49,14 @@ public class ModesController extends BaseEventHandler {
 
             switch (currentState.mode){
                 case 0:
-                    startDrag = new Point2D(event.getX(), event.getY());
+                    startDrag = new Vector2(event.getX(), event.getY());
                     break;
                 case 1:
-                    startDrag = new Point2D(event.getX(), event.getY());
+                    startDrag = new Vector2(event.getX(), event.getY());
 
                     break;
                 case 2:
-                    startDrag = new Point2D(event.getX(), event.getY());
+                    startDrag = new Vector2(event.getX(), event.getY());
                     break;
 
                 case 3:
@@ -65,10 +66,10 @@ public class ModesController extends BaseEventHandler {
 
                 case 4:
                     for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
-                        Figures fig = (Figures) itr.next();
+                        Figure fig = (Figure) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY()) &&fig.getType()==2){
                             from = fig;
-                            startDrag = new Point2D(event.getX(), event.getY());
+                            startDrag = new Vector2(event.getX(), event.getY());
                             break;
                         }
                     }
@@ -76,7 +77,7 @@ public class ModesController extends BaseEventHandler {
 
                 case 5:
                     for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
-                        Figures fig = (Figures) itr.next();
+                        Figure fig = (Figure) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY())){
                             controller.changeColor(fig);
                             observer.update();
@@ -89,17 +90,17 @@ public class ModesController extends BaseEventHandler {
 
                 case 6:
                     for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
-                        Figures fig = (Figures) itr.next();
+                        Figure fig = (Figure) itr.next();
                         if(fig.isMouseInside(event.getX(),event.getY())&& fig.getType()==2){
                             from = fig;
-                            startDrag = new Point2D(event.getX(), event.getY());
+                            startDrag = new Vector2(event.getX(), event.getY());
                             break;
                         }
                     }
                     break;
 
                 case 7:
-                    startDrag = new Point2D(event.getX(), event.getY());
+                    startDrag = new Vector2(event.getX(), event.getY());
                     break;
             }
 
@@ -111,7 +112,7 @@ public class ModesController extends BaseEventHandler {
                     if(Math.abs(startDrag.getX() - event.getX()) > 20 &&
                             Math.abs(startDrag.getY() - event.getY())>20) {
                         dragged = true;
-                        endDrag = new Point2D(event.getX(), event.getY());
+                        endDrag = new Vector2(event.getX(), event.getY());
                         currentState.tempFig = new TextEllipse(startDrag.getX(), startDrag.getY(), event.getX(), event.getY());
                         controller.setShape(currentState.tempFig, new Text(""));
                         controller.setStroke(currentState.tempFig);
@@ -124,7 +125,7 @@ public class ModesController extends BaseEventHandler {
                     if(Math.abs(startDrag.getX() - event.getX()) > 20 &&
                             Math.abs(startDrag.getY() - event.getY())>20) {
                         dragged = true;
-                        endDrag = new Point2D(event.getX(), event.getY());
+                        endDrag = new Vector2(event.getX(), event.getY());
                         currentState.tempFig = new ImageRect(startDrag.getX(), startDrag.getY(),event.getX(), event.getY());
                         controller.setShape(currentState.tempFig, new Text(""));
                         controller.setStroke(currentState.tempFig);
@@ -137,7 +138,7 @@ public class ModesController extends BaseEventHandler {
                     if(Math.abs(startDrag.getX() - event.getX()) > 20 &&
                             Math.abs(startDrag.getY() - event.getY())>20) {
                         dragged = true;
-                        endDrag = new Point2D(event.getX(), event.getY());
+                        endDrag = new Vector2(event.getX(), event.getY());
                         currentState.tempFig = new TextRect(startDrag.getX(), startDrag.getY(), event.getX(), event.getY());
                         controller.setShape(currentState.tempFig, new Text(""));
                         controller.setStroke(currentState.tempFig);
@@ -151,7 +152,7 @@ public class ModesController extends BaseEventHandler {
 
                 case 4:
                     if(from != null ) {
-                        endDrag = new Point2D(event.getX(), event.getY());
+                        endDrag = new Vector2(event.getX(), event.getY());
                         currentState.tempFig = new ConnectorAdapter(new MyLine(startDrag.getX(), startDrag.getY(),event.getX(), event.getY()));
                         controller.setShape(currentState.tempFig, new Text(""));
                         controller.setStroke(currentState.tempFig);
@@ -160,7 +161,7 @@ public class ModesController extends BaseEventHandler {
 
                 case 6:
                     if(from != null ) {
-                        endDrag = new Point2D(event.getX(), event.getY());
+                        endDrag = new Vector2(event.getX(), event.getY());
                         currentState.tempFig = new ConnectorAdapter(new Arrow(startDrag.getX(), startDrag.getY(),event.getX(), event.getY()));
                         controller.setShape(currentState.tempFig, new Text(""));
                         controller.setStroke(currentState.tempFig);
@@ -169,7 +170,7 @@ public class ModesController extends BaseEventHandler {
 
                 case 7:
                     dragged=true;
-                    endDrag = new Point2D(event.getX(), event.getY());
+                    endDrag = new Vector2(event.getX(), event.getY());
                    // currentState.tempFig = new CustomTextArea(startDrag.getX(), startDrag.getY(),event.getX(), event.getY(), observer);
                     controller.setStroke(currentState.tempFig);
                     controller.setShape(currentState.tempFig, new Text(""));
@@ -225,7 +226,7 @@ public class ModesController extends BaseEventHandler {
                     break;
                 case 4:
                     for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
-                        Figures fig = (Figures) itr.next();
+                        Figure fig = (Figure) itr.next();
                         System.out.println(fig);
                         if (fig.isMouseInside(event.getX(), event.getY())) {
                             to = fig;
@@ -247,14 +248,14 @@ public class ModesController extends BaseEventHandler {
 
                 case 6:
                     for(Iterator itr = sheetManager.currentTreeSet.descendingIterator();itr.hasNext();){
-                        Figures fig = (Figures) itr.next();
+                        Figure fig = (Figure) itr.next();
                         if (fig.isMouseInside(event.getX(), event.getY()) && fig instanceof TextEllipse){
                             to = fig;
                             break;
                         }
                     }
                     if(to!=null && to != from && from != null && to.getType() == 2) {
-                        Point2D interP = GeomCalculations.interactionPointsWithEllipse(startDrag,
+                        Vector2 interP = GeomCalculations.interactionPointsWithEllipse(startDrag,
                                 endDrag, (TextEllipse) to);
                         Arrow arrow = new Arrow(startDrag.getX(), startDrag.getY(),
                                 endDrag.getX(), endDrag.getY(), interP, from, (TextEllipse) to);
@@ -288,7 +289,7 @@ public class ModesController extends BaseEventHandler {
     }
 
     private void changeAllConsParams(){
-        for(Figures figure:sheetManager.currentTreeSet) {
+        for(Figure figure:sheetManager.currentTreeSet) {
             if(figure.getType()==1)
             controller.changeParams(figure,0,0,figure.getFigH(),figure.getFigW());
         }

@@ -7,25 +7,27 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import models.connectors.Connectors;
 import views.Observer;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class TextRect extends Rectangle implements Figures {
+public class TextRect extends Rectangle implements Figure, Serializable {
 
     protected double x,y,x1,y1, w, h, centerX, centerY;
     private double xText,yText,x1Text,y1Text, wText, hText;
-    protected Color color;
+    protected transient Color color;
+    private String colorRGB;
     protected Text text;
     private int layer;
 
-    private Observer observer;
+    private transient Observer observer;
 
     private CustomTextArea customTextArea;
-    private CurrentState currentState;
-    private SheetManager sheetManager;
-    private ControllerImpl controller;
+    private transient CurrentState currentState;
+    private transient SheetManager sheetManager;
+    private transient ControllerImpl controller;
+
+    public TextRect(){}
 
     public TextRect(double x, double y, double x1, double y1){
 
@@ -78,7 +80,9 @@ public class TextRect extends Rectangle implements Figures {
     }
 
 
-
+    public Figure getSource() {
+        return null;
+    }
 
 
     @Override
@@ -243,9 +247,17 @@ public class TextRect extends Rectangle implements Figures {
     @Override
     public void setFigColor(Color c) {
         this.color = c;
+        colorRGB = toRGBCode(color);
 
     }
 
+    public static String toRGBCode( Color color )
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
+    }
 
 
     public void recalculateSize(double zoomFactor){

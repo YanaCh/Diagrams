@@ -2,15 +2,15 @@ package models.outline;
 
 import javafx.scene.Group;
 import models.connectors.Connectors;
-import models.figures.Figures;
+import models.figures.Figure;
 import views.Observer;
 
 public class OutlineShape {
 
     private  OutlineInterface outlineInterface;
-    private Figures figure;
+    private Figure figure;
 
-    public void setOutLineShape(Figures figure){
+    public void setOutLineShape(Figure figure){
         if(!(figure == null)){
             this.figure = figure;
 

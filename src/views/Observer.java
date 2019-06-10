@@ -4,7 +4,9 @@ import controllers.ModesController;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.layout.Pane;
 
-public interface Observer {
+import java.io.Serializable;
+
+public interface Observer extends Serializable {
 
     void update();
 

@@ -5,21 +5,21 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import models.figures.Figures;
+import models.figures.Figure;
 import models.figures.ImageRect;
 import models.figures.TextEllipse;
 import models.figures.TextRect;
 import views.Observer;
 
 public class FigOutline extends Rectangle implements OutlineInterface {
-    private Figures figure;
+    private Figure figure;
     private Circle circle,circle1, circle2, circle3;
     private double x,y,x1,y1,x2,y2,x3,y3, w, h;
     private Group group;
     private ControllerImpl controller;
     private Observer observer;
 
-    public FigOutline(Figures figure){
+    public FigOutline(Figure figure){
         this.figure = figure;
         controller = ControllerImpl.getInstance();
         group = new Group();

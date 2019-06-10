@@ -3,9 +3,12 @@ package models.connectors;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import models.figures.Figure;
 import views.Observer;
 
-public interface Connectors {
+import java.io.Serializable;
+
+public interface Connectors extends Serializable {
 
     void recalculate();
 
@@ -34,6 +37,10 @@ public interface Connectors {
     void setLayer(int layer);
 
     int getType();
+
+    Figure getTo();
+
+    Figure getFrom();
 
 
 }

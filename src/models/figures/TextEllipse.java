@@ -1,33 +1,38 @@
 package models.figures;
 
 import controllers.ControllerImpl;
-import controllers.CurrentState;
 import controllers.SheetManager;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Text;
-import models.connectors.Connectors;
 import views.Observer;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class TextEllipse extends Ellipse implements Figures {
+public class TextEllipse extends Ellipse implements Figure, Serializable {
 
     private double x,y,x1,y1,centerX, centerY, radiusX, radiusY;
+    public double startingX, startingY, startingX1, startingY1;
     //A2(x,y),B2(x2,y2) vertices of the to
     private double  wText, hText;
     private Text text;
-    private Color color;
+    private transient Color color;
+    private String colorRGB;
     private int layer;
 
-    Observer observer;
+    private transient Observer observer;
 
     private CustomTextArea customTextArea;
-    private SheetManager sheetManager;
-    private ControllerImpl controller;
+    private transient SheetManager sheetManager;
+    private transient ControllerImpl controller;
 
     public TextEllipse(double x, double y, double x1, double y1){
+
+        startingX = x;
+        startingY = y;
+        startingX1 = x1;
+        startingY1 = y1;
 
         this.centerX = (x + x1)/2;
         this.centerY = (y + y1)/2;
@@ -42,6 +47,11 @@ public class TextEllipse extends Ellipse implements Figures {
     }
 
     public TextEllipse(double x, double y, double x1, double y1, Observer observer){
+
+        startingX = x;
+        startingY = y;
+        startingX1 = x1;
+        startingY1 = y1;
 
         this.centerX = (x + x1)/2;
         this.centerY = (y + y1)/2;
@@ -68,6 +78,13 @@ public class TextEllipse extends Ellipse implements Figures {
     }
 
 
+    public static String toRGBCode( Color color )
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
+    }
 
      @Override
      public void setFigParams() {
@@ -186,6 +203,7 @@ public class TextEllipse extends Ellipse implements Figures {
 
     }
 
+
    @Override
    public Color getFigColor() {
     return color;
@@ -194,8 +212,12 @@ public class TextEllipse extends Ellipse implements Figures {
    @Override
    public void setFigColor(Color color) {
        this.color = color;
+       colorRGB = toRGBCode(color);
 
    }
+    public Figure getSource() {
+        return null;
+    }
 
     @Override
     public void setText(Text text) {

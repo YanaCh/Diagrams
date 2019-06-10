@@ -2,14 +2,15 @@ package models.connectors;
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import models.figures.Figures;
+import models.figures.Figure;
 import views.Observer;
 
-public class ConnectorAdapter implements Figures  {
+import java.io.Serializable;
 
-    Connectors connector;
+public class ConnectorAdapter implements Figure, Serializable {
+
+    transient Connectors connector;
 
     public ConnectorAdapter(Connectors connector) {
         this.connector = connector;
@@ -94,6 +95,10 @@ public class ConnectorAdapter implements Figures  {
     @Override
     public void setFigY1(double figY1) {
 
+    }
+
+    public Figure getSource() {
+        return null;
     }
 
     @Override

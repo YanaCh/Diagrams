@@ -1,13 +1,13 @@
 package models.outline;
 
 import javafx.scene.shape.Line;
-import models.figures.Figures;
+import models.figures.Figure;
 
 public class StrokeConnector extends StrokeShape {
 
     private Line line;
 
-    public StrokeConnector(Figures figure) {
+    public StrokeConnector(Figure figure) {
         super(figure);
         line = new Line();
         super.shape = line;

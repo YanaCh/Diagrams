@@ -1,32 +1,23 @@
 package controllers;
 
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import models.figures.CustomTextArea;
-import models.figures.Figures;
+import models.figures.Figure;
 import models.outline.StrokeShape;
-import views.Sheet;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.io.Serializable;
 
-public class CurrentState {
+public class CurrentState implements Serializable {
 
     private static CurrentState currentState;
 
-    public Figures tempFig;
+    public Figure tempFig;
     public int tempLayerVal = 0;
     public CustomTextArea selectedTextArea;
     //public ArrayList<Sheet> sheetArrayList = new ArrayList<>();
-   /* public TreeSet<Figures> treeSet = new TreeSet<Figures>(new Comparator<Figures>() {
+   /* public TreeSet<Figure> treeSet = new TreeSet<Figure>(new Comparator<Figure>() {
         @Override
 
-        public int compare(Figures o1, Figures o2) {
+        public int compare(Figure o1, Figure o2) {
 
             if(o1.getPriority()>o2.getPriority())
                 return 1;

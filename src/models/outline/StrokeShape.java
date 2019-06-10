@@ -4,12 +4,12 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
-import models.figures.Figures;
+import models.figures.Figure;
 import views.Observer;
 
 public abstract class StrokeShape extends Group {
     private Observer observer;
-    protected Figures figure;
+    protected Figure figure;
     protected Circle circle,circle1;
     protected double x;
     protected double y;
@@ -17,7 +17,7 @@ public abstract class StrokeShape extends Group {
     protected double y1;
     protected Shape shape;
 
-    public StrokeShape(Figures figure){
+    public StrokeShape(Figure figure){
         this.figure = figure;
     }
 
@@ -70,7 +70,7 @@ public abstract class StrokeShape extends Group {
         return shape;
     }
 
-    public Figures getFigure() {return figure; }
+    public Figure getFigure() {return figure; }
 
     public void notifyChanges(){ observer.update(); }
 

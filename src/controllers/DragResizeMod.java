@@ -6,9 +6,8 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import models.figures.CustomTextArea;
-import models.figures.Figures;
+import models.figures.Figure;
 import views.EditorView;
 import views.Observer;
 
@@ -42,15 +41,15 @@ public class DragResizeMod {
 
 
     public interface OnDragResizeEventListener {
-        void onDrag(Figures figure, double x, double y, double h, double w);
+        void onDrag(Figure figure, double x, double y, double h, double w);
 
-        void onResize(Figures figures, double x, double y, double h, double w);
+        void onResize(Figure figure, double x, double y, double h, double w);
     }
 
     private static final OnDragResizeEventListener defaultListener = new OnDragResizeEventListener() {
         private ControllerImpl controller = ControllerImpl.getInstance();
         @Override
-        public void onDrag(Figures figure, double x, double y, double h, double w) {
+        public void onDrag(Figure figure, double x, double y, double h, double w) {
             /*
             // TODO find generic way to get parent width and height of any node
             // can perform out of bounds check here if you know your parent size
@@ -63,7 +62,7 @@ public class DragResizeMod {
         }
 
         @Override
-        public void onResize(Figures figure, double x, double y, double h, double w) {
+        public void onResize(Figure figure, double x, double y, double h, double w) {
             /*
             // TODO find generic way to get parent width and height of any node
             // can perform out of bounds check here if you know your parent size
@@ -75,7 +74,7 @@ public class DragResizeMod {
             setNodeSize(figure, x, y, h, w);
         }
 
-        private void setNodeSize(Figures figure, double x, double y, double h, double w) {
+        private void setNodeSize(Figure figure, double x, double y, double h, double w) {
             controller.changeStrokeParams(figure,x,y,h,w);
         }
     };
@@ -101,7 +100,7 @@ public class DragResizeMod {
     private static boolean toDelete = false;
 
     private Node node;
-    private Figures figure;
+    private Figure figure;
     private OnDragResizeEventListener listener = defaultListener;
     public static boolean wasCalled = false;
     private CurrentState  currentState = CurrentState.getInstance();
@@ -116,7 +115,7 @@ public class DragResizeMod {
      //   this.controller = controller;
     //}
 
-    private DragResizeMod(Node node, Figures figure, OnDragResizeEventListener listener) {
+    private DragResizeMod(Node node, Figure figure, OnDragResizeEventListener listener) {
         this.node = node;
         this.figure = figure;
 
@@ -126,7 +125,7 @@ public class DragResizeMod {
 
     private DragResizeMod(){}
 
-    public void makeDeletable(Figures figure, Observer observer){
+    public void makeDeletable(Figure figure, Observer observer){
 
 
         EditorView.scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -135,7 +134,7 @@ public class DragResizeMod {
                 if ( event.getCode().equals( KeyCode.DELETE ) && !figure.isText() ){
                     System.out.println("Delete");
                     for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
-                        Figures fig = (Figures) itr.next();
+                        Figure fig = (Figure) itr.next();
                         if(fig.equals(figure)){
                             itr.remove();
                             currentState.strokeShape = null;
@@ -148,11 +147,11 @@ public class DragResizeMod {
         });
     }
 
-    public  void makeResizable(Node node, Figures figure) {
+    public  void makeResizable(Node node, Figure figure) {
         makeResizable(node, figure,null);
     }
 
-    public void makeResizable(Node node,Figures figure,OnDragResizeEventListener listener) {
+    public void makeResizable(Node node, Figure figure, OnDragResizeEventListener listener) {
 
         final DragResizeMod resizer = new DragResizeMod(node, figure,listener);
 
@@ -218,7 +217,7 @@ public class DragResizeMod {
 
     private void findTextArea(Observer observer, CustomTextArea textArea){
         for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
-            Figures fig = (Figures) itr.next();
+            Figure fig = (Figure) itr.next();
             if(fig.equals(textArea)){
                 controller.setStroke(fig);
                 makeDeletable(currentState.strokeShape.getFigure(), observer);
@@ -236,7 +235,7 @@ public class DragResizeMod {
     private void findFig(MouseEvent event, Observer observer){
         if(currentState.mode ==3) {
             for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
-                Figures fig = (Figures) itr.next();
+                Figure fig = (Figure) itr.next();
                 if (fig.isMouseInside(event.getX(), event.getY())) {
                     controller.setStroke(fig);
                     makeDeletable(currentState.strokeShape.getFigure(), observer);
@@ -253,7 +252,7 @@ public class DragResizeMod {
     private boolean isMultiLayer(MouseEvent event){
         int count = 0;
             for (Iterator itr = sheetManager.currentTreeSet.descendingIterator(); itr.hasNext(); ) {
-                Figures fig = (Figures) itr.next();
+                Figure fig = (Figure) itr.next();
                 if (fig.isMouseInside(event.getX(), event.getY()))
                     count++;
             }

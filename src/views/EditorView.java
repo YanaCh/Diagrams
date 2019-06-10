@@ -2,9 +2,11 @@ package views;
 
 import com.jfoenix.controls.*;
 import controllers.*;
+import fileoperating.SaveFile;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -12,24 +14,26 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import models.ColorButton;
-import models.figures.Figures;
 import org.controlsfx.dialog.FontSelectorDialog;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
 
 
+public class EditorView extends Application implements Observer , Serializable  {
 
-public class EditorView extends Application implements Observer {
-
-    private ColorController colorController;
+    private transient ColorController colorController;
     private ModesController modesController;
     private ControllerImpl controller;
     private CurrentState currentState;
@@ -98,11 +102,6 @@ public class EditorView extends Application implements Observer {
         toolButtonBar.setOrientation(Orientation.VERTICAL);
         toolButtonBar.getItems().addAll(btnActor, btnSystem, btnUseCase, btnDrag, btnLine, btnRepaint, btnArrow, btnText, makeXMl);
 
-
-        //HBox hBox = new HBox();
-        //toolButtonBar.prefWidthProperty().bind(hBox.widthProperty());
-        //toolButtonBar.prefHeightProperty().bind(hBox.heightProperty());
-        //hBox.getChildren().add(toolButtonBar);
 
         splitPane.getItems().add(toolButtonBar);
 
@@ -177,30 +176,11 @@ public class EditorView extends Application implements Observer {
         plusButton.getStyleClass().addAll("animated-option-button");
 
 
-       /* ScrollPane scrollPane = new ScrollPane();
-        scrollPane.prefWidthProperty().bind(vBox.widthProperty());
-        scrollPane.prefHeightProperty().bind(vBox.heightProperty());
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-
-
-
-        canvas = new Pane();
-        canvas.setStyle("-fx-background-color: white");
-        scrollPane.setContent(canvas);
-
-        canvas.setPrefHeight(10000);
-        canvas.prefWidthProperty().bind(scrollPane.widthProperty());
-        //canvas.prefHeightProperty().bind(scrollPane.heightProperty());
-        */
-
-
-
-        tab =  new Sheet(vBox, "sheet 1", modesController, this);
+        tab =  new Sheet(vBox, "sheet 1", modesController);
         sheetManager.currentSheet = tab;
 
-        Sheet tab1 = new Sheet(vBox, "sheet 2", modesController, this);
-        Sheet tab3 = new Sheet(vBox, "sheet 3", modesController, this);
+        Sheet tab1 = new Sheet(vBox, "sheet 2", modesController);
+        Sheet tab3 = new Sheet(vBox, "sheet 3", modesController);
 
         sheetManager.tabPane.setSide(Side.TOP);
         sheetManager.tabPane.getTabs().addAll(tab, tab1, tab3);
@@ -227,22 +207,6 @@ public class EditorView extends Application implements Observer {
         //////////////////////////////////////////////////////////////////////////////////
 
 
-      /*  if (scrollPane.getSkin() == null) {
-            // Skin is not yet attached, wait until skin is attached to access the scroll bars
-            ChangeListener<Skin<?>> skinChangeListener = new ChangeListener<Skin<?>>() {
-                @Override
-                public void changed(ObservableValue<? extends Skin<?>> observable, Skin<?> oldValue, Skin<?> newValue) {
-                    scrollPane.skinProperty().removeListener(this);
-                    accessScrollBar(scrollPane);
-                }
-            };
-            scrollPane.skinProperty().addListener(skinChangeListener);
-        } else {
-            // Skin is already attached, just access the scroll bars
-            accessScrollBar(scrollPane);
-        }
-
-*/
         colorController = new ColorController(multiColorButton);
 
         redButton.setOnAction(colorController);
@@ -314,14 +278,42 @@ public class EditorView extends Application implements Observer {
                 modesController.setActive(true);
             }
         });
-        makeXMl.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+        makeXMl.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>()  {
             @Override
             public void handle(javafx.event.ActionEvent event) {
-
+                SaveFile saveFile = new SaveFile("Diagram.dat", EditorView.this);
 
             }
         });
 
+        exit.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent event) {
+                Platform.exit();
+            }
+        });
+
+        saveAs.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent event) {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Save Diagram");
+                fc.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("All Files", "*.*"), //
+                        new FileChooser.ExtensionFilter("DAT", "*.dat"));
+                File file = fc.showSaveDialog(primaryStage);
+                if (file != null) {
+
+
+                      //  SaveFile saveFile = new SaveFile("Diagram.dat");
+
+
+                }
+            }
+        });
+        close.setAccelerator(KeyCombination.keyCombination("shortcut+ C"));
+        saveAs.setAccelerator(KeyCombination.keyCombination("shortcut+ S"));
+        exit.setAccelerator(KeyCombination.keyCombination("shortcut+ E"));
 
 
 
@@ -355,21 +347,6 @@ public class EditorView extends Application implements Observer {
             }
         });
 
-       /* canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, modesController);
-        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, modesController);
-        canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, modesController);
-
-        update();
-
-        canvas.widthProperty().addListener((obs, oldVal, newVal) -> {
-            update();
-        });
-
-        canvas.heightProperty().addListener((obs, oldVal, newVal) -> {
-           update();
-        });
-
-*/
     }
 
 
@@ -403,9 +380,6 @@ public class EditorView extends Application implements Observer {
 
     public void update() {
         sheetManager.currentSheet.update();
-       // drawMatrix();
-      //  drawFigs();
-      //  drawTempFigs();
 
     }
 
@@ -414,59 +388,11 @@ public class EditorView extends Application implements Observer {
         return canvas;
     }
 
-    private void drawMatrix(){
-
-        double width = canvas.getPrefWidth();
-        double height = canvas.getPrefHeight();
-
-        canvas.getChildren().clear();
-
-
-        for (int i = 0; i < width; i += 10) {
-            Line matrixLine = new Line();
-            matrixLine.setStroke(Color.BLACK);
-            matrixLine.setStrokeWidth(0.1);
-            matrixLine.setStartX(i);
-            matrixLine.setStartY(0.0f);
-            matrixLine.setEndX(i);
-            matrixLine.setEndY(height);
-            canvas.getChildren().add(matrixLine);
-
-        }
-
-        for (int i = 0; i < height; i += 10) {
-            Line matrixLine = new Line();
-            matrixLine.setStroke(Color.BLACK);
-            matrixLine.setStrokeWidth(0.1);
-            matrixLine.setStartX(0.0f);
-            matrixLine.setStartY(i);
-            matrixLine.setEndX(width);
-            matrixLine.setEndY(i);
-            canvas.getChildren().add(matrixLine);
-        }
-
-    }
-
-
-    private void drawFigs(){
-
-       // for (Figures figure: currentState.treeSet)
-        //    figure.addShape(canvas);
-
-    }
-
-    private void drawTempFigs() {
-
-            if(currentState.tempFig!=null)
-            currentState.tempFig.addShape(canvas);
-
-            if(currentState.strokeShape!=null)
-                canvas.getChildren().add(currentState.strokeShape);
-    }
 
     public ColorPicker getMultiColorButton() {
         return multiColorButton;
     }
+
 
     public static void main(String[] args) {
         Application.launch(EditorView.class,args);

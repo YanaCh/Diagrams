@@ -5,20 +5,25 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import models.figures.Figures;
+import math.Vector2;
+import models.figures.Figure;
 import views.Observer;
 
-public class MyLine extends Line implements Connectors {
+import java.io.Serializable;
+
+public class MyLine extends Line implements Connectors, Serializable {
 
     private double x, y, x1, y1;
-    private Figures from, to; // 2 recs, from one to another
-    private Color color;
-    private Point2D vecTo;
-    private Point2D vecFrom;
-    private Text text;
+    private Figure from;
+    private Figure to; // 2 recs, from one to another
+    private transient Color color;
+    private String colorRGB;
+    private  Vector2 vecTo;
+    private  Vector2 vecFrom;
+    private  Text text;
     private int layer;
 
-    private Observer observer;
+    private transient Observer observer;
 
     public MyLine(double x, double y, double x1, double y1){
         this.x = x;
@@ -27,7 +32,7 @@ public class MyLine extends Line implements Connectors {
         this.y1 = y1;
     }
 
-    public MyLine(double x, double y, double x1, double y1, Figures from, Figures to){
+    public MyLine(double x, double y, double x1, double y1, Figure from, Figure to){
 
         this.x = x;
         this.y = y;
@@ -37,9 +42,17 @@ public class MyLine extends Line implements Connectors {
         this.from = from;
         this.to = to;
 
-        vecFrom = new Point2D(from.getCenterX()- x, from.getCenterY() - y);
-        vecTo = new Point2D(to.getCenterX()- x1, to.getCenterY() - y1);
+        vecFrom = new Vector2(from.getCenterX()- x, from.getCenterY() - y);
+        vecTo = new Vector2(to.getCenterX()- x1, to.getCenterY() - y1);
 
+    }
+
+    public static String toRGBCode( Color color )
+    {
+        return String.format( "#%02X%02X%02X",
+                (int)( color.getRed() * 255 ),
+                (int)( color.getGreen() * 255 ),
+                (int)( color.getBlue() * 255 ) );
     }
 
 
@@ -63,8 +76,8 @@ public class MyLine extends Line implements Connectors {
         }
 
         try {
-            text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
-            text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
+           // text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
+           // text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
         }
 
         catch (NullPointerException e){
@@ -86,6 +99,7 @@ public class MyLine extends Line implements Connectors {
 
     public void setColor(Color color) {
         this.color = color;
+        colorRGB = toRGBCode(color);
 
     }
 
@@ -147,6 +161,16 @@ public class MyLine extends Line implements Connectors {
     public int getType() {
         return 1;
     }
+
+
+    public Figure getFrom() {
+        return from;
+    }
+
+    public Figure getTo() {
+        return to;
+    }
+
 
     private void notifyChanges(){
         observer.update();

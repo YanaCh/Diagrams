@@ -9,28 +9,33 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import math.Vector2;
 import views.Observer;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
+
+import java.io.Serializable;
 import java.util.function.UnaryOperator;
 
-public class CustomTextArea extends TextArea implements Figures {
+public class CustomTextArea extends TextArea implements Figure, Serializable {
 
     private double x,y,x1,y1, w, h, centerX, centerY;
     private int layer;
 
-    private Point2D vecFrom;
+    private Figure source;
 
-    private Observer observer;
+    private Vector2 vecFrom;
+
+    private transient Observer observer;
 
     private String cssScroll;
     private String cssGrey;
     public String cssTransparent;
 
 
-    private CurrentState currentState = CurrentState.getInstance();
+    private transient CurrentState currentState = CurrentState.getInstance();
 
-    private UnaryOperator<Change> filter = c -> {
+    private transient UnaryOperator<Change> filter = c -> {
 
         int caret = c.getCaretPosition();
         int anchor = c.getAnchor() ;
@@ -52,9 +57,11 @@ public class CustomTextArea extends TextArea implements Figures {
     };
 
 
+    public CustomTextArea(){}
 
+    public CustomTextArea(double x, double y, double x1, double y1, Observer observer, Figure source){
 
-    public CustomTextArea(double x, double y, double x1, double y1, Observer observer, Figures source){
+        this.source = source;
 
         this.h = Math.abs(y - y1);
         this.w = Math.abs(x - x1);
@@ -69,8 +76,9 @@ public class CustomTextArea extends TextArea implements Figures {
 
     }
 
-    public CustomTextArea(double centerX, double centerY, double w, double h, Figures source, Observer observer){
+    public CustomTextArea(double centerX, double centerY, double w, double h, Figure source, Observer observer){
 
+        this.source = source;
         this.centerX = centerX;
         this.centerY = centerY;
         this.w = w;
@@ -84,9 +92,9 @@ public class CustomTextArea extends TextArea implements Figures {
 
     }
 
-    private void init(Figures source){
+    private void init(Figure source){
 
-        vecFrom = new Point2D(source.getFigX() - x, source.getFigY() - y);
+        vecFrom = new Vector2(source.getFigX() - x, source.getFigY() - y);
 
 
 
@@ -128,9 +136,9 @@ public class CustomTextArea extends TextArea implements Figures {
         return true;
     }
 
-    public void followFig(Figures figures){
-        x = figures.getFigX() - vecFrom.getX();
-        y = figures.getFigY() - vecFrom.getY();
+    public void followFig(Figure figure){
+        x = figure.getFigX() - vecFrom.getX();
+        y = figure.getFigY() - vecFrom.getY();
         setFigParams();
 
     }
@@ -196,6 +204,9 @@ public class CustomTextArea extends TextArea implements Figures {
 
     }
 
+    public Figure getSource() {
+        return source;
+    }
     @Override
     public double getCenterX() {
         return centerX;

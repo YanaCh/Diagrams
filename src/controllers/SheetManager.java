@@ -1,25 +1,24 @@
 package controllers;
 
 import com.jfoenix.controls.JFXTabPane;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
-import models.figures.Figures;
+import models.figures.Figure;
 import views.Sheet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeSet;
 
-public class SheetManager {
+public class SheetManager implements Serializable {
 
-    private static SheetManager sheetManager;
+    private transient static SheetManager sheetManager;
 
-    public JFXTabPane tabPane = new JFXTabPane();
+    public transient JFXTabPane tabPane = new JFXTabPane();
 
-    public ArrayList<Sheet> sheetArrayList = new ArrayList<>();
-    public Sheet currentSheet;
-    public TreeSet<Figures> currentTreeSet = new TreeSet<Figures>();
-    public Pane currentCanvas;
+    public transient ArrayList<Sheet> sheetArrayList = new ArrayList<>();
+    public transient Sheet currentSheet;
+    public TreeSet<Figure> currentTreeSet = new TreeSet<Figure>();
+    public transient Pane currentCanvas;
 
     private SheetManager(){
         tabPane.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)->{
