@@ -183,4 +183,12 @@ public class ConnectorAdapter implements Figure, Serializable {
         return false;
     }
 
+    public Figure getTo(){
+        return connector.getTo();
+    }
+
+   public Figure getFrom() {
+        return connector.getFrom();
+    }
+
 }

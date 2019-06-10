@@ -81,9 +81,9 @@ public class SaveFile {
                     controller.setShape(textFig,new Text(""));
                 }
 
-                if(fig instanceof MyLine){
+                if(fig instanceof ConnectorAdapter){
                    MyLine line = new MyLine(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(),
-                            ((Connectors)fig).getFrom(), ((Connectors)fig).getTo());
+                            ((ConnectorAdapter)fig).getFrom(), ((ConnectorAdapter)fig).getTo());
                     connectorAdapter = new ConnectorAdapter(line);
                     resTreeSet.add(connectorAdapter);
                     controller.setShape(connectorAdapter, new Text(""));
