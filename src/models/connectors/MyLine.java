@@ -22,6 +22,7 @@ public class MyLine extends Line implements Connectors, Serializable {
     private  Vector2 vecFrom;
     private  Text text;
     private int layer;
+    private int figLayer;
 
     private transient Observer observer;
 
@@ -30,6 +31,18 @@ public class MyLine extends Line implements Connectors, Serializable {
         this.y = y;
         this.x1 = x1;
         this.y1 = y1;
+    }
+
+
+    public MyLine(double x, double y, double x1, double y1, Vector2 vecFrom, Vector2 vecTo){
+
+        this.x = x;
+        this.y = y;
+        this.x1 = x1;
+        this.y1 = y1;
+
+        this.vecFrom = vecFrom;
+        this.vecTo = vecTo;
     }
 
     public MyLine(double x, double y, double x1, double y1, Figure from, Figure to){
@@ -46,6 +59,24 @@ public class MyLine extends Line implements Connectors, Serializable {
         vecTo = new Vector2(to.getCenterX()- x1, to.getCenterY() - y1);
 
     }
+
+    @Override
+    public int getFigLayer() {
+        return figLayer;
+    }
+
+    public void setFigLayer(int layer){
+        this.figLayer = layer;
+    }
+
+    public Vector2 getVecTo() {
+        return vecTo;
+    }
+
+    public Vector2 getVecFrom() {
+        return vecFrom;
+    }
+
 
     public static String toRGBCode( Color color )
     {
@@ -165,6 +196,11 @@ public class MyLine extends Line implements Connectors, Serializable {
 
     public Figure getFrom() {
         return from;
+    }
+
+    @Override
+    public Vector2 getInterPoint() {
+        return null;
     }
 
     public Figure getTo() {

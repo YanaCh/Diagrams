@@ -30,12 +30,13 @@ public class Arrow extends Group implements Connectors, Serializable {
    private transient Color color;
    private String colorRGB;
    private int layer;
+    private int figLayer;
 
-   private ArrowCalculations arrowCalculations;
+   private transient ArrowCalculations arrowCalculations;
 
    private int count = 0;
 
-   private Observer observer;
+   private transient Observer observer;
 
    public Arrow(double x, double y, double x1, double y1){
 
@@ -50,7 +51,28 @@ public class Arrow extends Group implements Connectors, Serializable {
        arrowCalculations = new DraggingArrow(this);
        arrowCalculations.calculate();
 
+
    }
+
+
+    public Arrow(double x, double y, double x1, double y1, Vector2 interPoint,  Vector2 vecFrom, Vector2 vecTo){
+
+        this.x = x;
+        this.y = y;
+        this.x1 = x1;
+        this.y1 = y1;
+        this.line = new Line();
+        this.arrow1 = new Line();
+        this.arrow2 = new Line();
+        this.interPoint = interPoint;
+
+        this.vecFrom = vecFrom;
+        this.vecTo = vecTo;
+
+        arrowCalculations = new ReleasedArrow(this);
+        arrowCalculations.calculate();
+
+    }
 
    public Arrow(double x, double y, double x1, double y1, Vector2 interPoint, Figure from,
                 TextEllipse ellipTo){
@@ -73,6 +95,24 @@ public class Arrow extends Group implements Connectors, Serializable {
        arrowCalculations.calculate();
 
    }
+
+    @Override
+    public int getFigLayer() {
+        return figLayer;
+    }
+
+    public void setFigLayer(int layer){
+        this.figLayer = layer;
+    }
+
+    public Vector2 getVecTo() {
+        return vecTo;
+    }
+
+    public Vector2 getVecFrom() {
+        return vecFrom;
+    }
+
 
     public static String toRGBCode( Color color )
     {

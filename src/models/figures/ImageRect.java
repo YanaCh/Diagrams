@@ -1,6 +1,7 @@
 package models.figures;
 
 import controllers.ControllerImpl;
+import controllers.CurrentState;
 import controllers.SheetManager;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.Light;
@@ -30,6 +31,7 @@ public class ImageRect extends ImageView implements Figure, Serializable {
     private CustomTextArea customTextArea;
     private transient SheetManager sheetManager;
     private transient ControllerImpl controller;
+    private CurrentState currentState;
 
     public ImageRect(double x, double y, double x1, double y1){
 
@@ -74,6 +76,7 @@ public class ImageRect extends ImageView implements Figure, Serializable {
 
         this.sheetManager = SheetManager.getInstance();
         this.controller = ControllerImpl.getInstance();
+        this.currentState = CurrentState.getInstance();
 
         xText = w/30;
         yText = h/30;
@@ -87,6 +90,8 @@ public class ImageRect extends ImageView implements Figure, Serializable {
         sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
         controller.setShape(customTextArea, text);
+        customTextArea.setLayer(currentState.tempLayerVal);
+        currentState.tempLayerVal++;
 
     }
 

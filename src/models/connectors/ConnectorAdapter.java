@@ -3,6 +3,7 @@ package models.connectors;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import math.Vector2;
 import models.figures.Figure;
 import views.Observer;
 
@@ -10,12 +11,16 @@ import java.io.Serializable;
 
 public class ConnectorAdapter implements Figure, Serializable {
 
-    transient Connectors connector;
+
+    Connectors connector;
 
     public ConnectorAdapter(Connectors connector) {
         this.connector = connector;
     }
 
+    public Vector2 getInterPoint() {
+        return connector.getInterPoint();
+    }
 
     @Override
     public double getFigX() {
@@ -191,4 +196,23 @@ public class ConnectorAdapter implements Figure, Serializable {
         return connector.getFrom();
     }
 
+    public Connectors getConnector() {
+        return connector;
+    }
+
+    public Vector2 getVecTo() {
+        return connector.getVecTo();
+    }
+
+    public Vector2 getVecFrom() {
+        return connector.getVecFrom();
+    }
+
+    public int getFigLayer() {
+        return connector.getFigLayer();
+    }
+
+    public void setFigLayer(int layer){
+       connector.setFigLayer(layer);
+    }
 }

@@ -188,6 +188,8 @@ public class ModesController extends BaseEventHandler implements Serializable {
                         sheetManager.currentTreeSet.add(el);
                         System.out.println(sheetManager.currentTreeSet);
                         controller.setShape(el,new Text(""));
+                        el.setLayer(currentState.tempLayerVal);
+                        currentState.tempLayerVal++;
                         currentState.tempFig = null;
                         startDrag = null;
                         endDrag = null;
@@ -200,6 +202,8 @@ public class ModesController extends BaseEventHandler implements Serializable {
                         sheetManager.currentTreeSet.add(imgR);
                         System.out.println(sheetManager.currentTreeSet);
                         controller.setShape(imgR,new Text(""));
+                        imgR.setLayer(currentState.tempLayerVal);
+                        currentState.tempLayerVal++;
                         currentState.tempFig = null;
                         startDrag = null;
                         endDrag = null;
@@ -212,6 +216,8 @@ public class ModesController extends BaseEventHandler implements Serializable {
                         sheetManager.currentTreeSet.add(r);
                         System.out.println(sheetManager.currentTreeSet);
                         controller.setShape(r,new Text("Text"));
+                        r.setLayer(currentState.tempLayerVal);
+                        currentState.tempLayerVal++;
                         currentState.tempFig = null;
                         startDrag = null;
                         endDrag = null;
@@ -238,6 +244,8 @@ public class ModesController extends BaseEventHandler implements Serializable {
                         adapter = new ConnectorAdapter(l);
                         sheetManager.currentTreeSet.add(adapter);
                         controller.setShape(adapter, new Text(""));
+                        l.setLayer(currentState.tempLayerVal);
+                        currentState.tempLayerVal++;
                     }
                     from = null;
                     to = null;
@@ -262,6 +270,8 @@ public class ModesController extends BaseEventHandler implements Serializable {
                         adapter = new ConnectorAdapter(arrow);
                         sheetManager.currentTreeSet.add(adapter);
                         controller.setShape(adapter, new Text("<<include>>"));
+                        arrow.setLayer(currentState.tempLayerVal);
+                        currentState.tempLayerVal++;
                     }
                     from = null;
                     to = null;

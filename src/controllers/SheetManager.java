@@ -12,13 +12,15 @@ import java.util.TreeSet;
 public class SheetManager implements Serializable {
 
     private transient static SheetManager sheetManager;
+    private transient CurrentState currentState = CurrentState.getInstance();
 
     public transient JFXTabPane tabPane = new JFXTabPane();
 
     public transient ArrayList<Sheet> sheetArrayList = new ArrayList<>();
     public transient Sheet currentSheet;
     public TreeSet<Figure> currentTreeSet = new TreeSet<Figure>();
-    public transient Pane currentCanvas;
+    public transient Pane currentCanvas = new Pane();
+
 
     private SheetManager(){
         tabPane.getSelectionModel().selectedItemProperty().addListener((obs,ov,nv)->{
@@ -29,6 +31,11 @@ public class SheetManager implements Serializable {
                     currentSheet = sheet;
                     currentTreeSet = sheet.treeSet;
                     currentCanvas = sheet.canvas;
+                    currentState.strokeShape = null;
+                    sheet.update();
+
+
+
                 }
             }
 

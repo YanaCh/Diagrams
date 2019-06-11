@@ -204,6 +204,17 @@ public class EditorView extends Application implements Observer , Serializable  
         primaryStage.show();
 
 
+
+        update();
+        sheetManager.currentCanvas.widthProperty().addListener((obs, oldVal, newVal) -> {
+            update();
+        });
+
+        sheetManager.currentCanvas.heightProperty().addListener((obs, oldVal, newVal) -> {
+            update();
+        });
+
+
         //////////////////////////////////////////////////////////////////////////////////
 
 

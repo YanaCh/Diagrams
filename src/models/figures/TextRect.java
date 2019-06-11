@@ -65,6 +65,7 @@ public class TextRect extends Rectangle implements Figure, Serializable {
         this.controller = ControllerImpl.getInstance();
         this.sheetManager = SheetManager.getInstance();
 
+
         xText = w/30;
         yText = h/30;
         x1Text = w/30;
@@ -77,6 +78,8 @@ public class TextRect extends Rectangle implements Figure, Serializable {
         sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
         controller.setShape(customTextArea, text);
+        customTextArea.setLayer(currentState.tempLayerVal);
+        currentState.tempLayerVal++;
     }
 
 

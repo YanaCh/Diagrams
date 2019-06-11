@@ -1,6 +1,7 @@
 package models.figures;
 
 import controllers.ControllerImpl;
+import controllers.CurrentState;
 import controllers.SheetManager;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -26,6 +27,7 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
     private CustomTextArea customTextArea;
     private transient SheetManager sheetManager;
     private transient ControllerImpl controller;
+    private CurrentState currentState;
 
     public TextEllipse(double x, double y, double x1, double y1){
 
@@ -65,6 +67,7 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
 
         this.sheetManager = SheetManager.getInstance();
         this.controller = ControllerImpl.getInstance();
+        this.currentState = CurrentState.getInstance();
 
 
         hText = 30;
@@ -74,6 +77,10 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
         sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
         controller.setShape(customTextArea, new Text(""));
+        customTextArea.setLayer(currentState.tempLayerVal);
+        currentState.tempLayerVal++;
+
+
 
     }
 

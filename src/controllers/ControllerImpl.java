@@ -56,8 +56,8 @@ public class ControllerImpl implements Serializable {
         figure.setFigColor(observer.getMultiColorButton().getValue());
         figure.setFigParams();
        // figure.setText(text);
-        figure.setLayer(currentState.tempLayerVal);
-        currentState.tempLayerVal++;
+        //figure.setLayer(currentState.tempLayerVal);
+       // currentState.tempLayerVal++;
 
     }
 

@@ -10,7 +10,7 @@ public class CurrentState implements Serializable {
 
     private static CurrentState currentState;
 
-    public Figure tempFig;
+    public transient Figure tempFig;
     public int tempLayerVal = 0;
     public CustomTextArea selectedTextArea;
     //public ArrayList<Sheet> sheetArrayList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class CurrentState implements Serializable {
 
 
 
-    public StrokeShape strokeShape;
+    public transient StrokeShape strokeShape;
    // public ColorPicker  multiColorButton;
 
 

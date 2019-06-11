@@ -49,15 +49,9 @@ public class Sheet extends Tab implements Serializable {
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, modesController);
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, modesController);
 
-        update();
 
-        canvas.widthProperty().addListener((obs, oldVal, newVal) -> {
-            update();
-        });
 
-        canvas.heightProperty().addListener((obs, oldVal, newVal) -> {
-            update();
-        });
+
 
 
         scrollPane.setContent(canvas);
@@ -108,17 +102,17 @@ public class Sheet extends Tab implements Serializable {
     private void drawFigs(){
 
         for (Figure figure: sheetManager.currentTreeSet)
-            figure.addShape(canvas);
+            figure.addShape(sheetManager.currentCanvas);
 
     }
 
     private void drawTempFigs() {
 
         if(currentState.tempFig!=null)
-            currentState.tempFig.addShape(canvas);
+            currentState.tempFig.addShape(sheetManager.currentCanvas);
 
         if(currentState.strokeShape!=null)
-            canvas.getChildren().add(currentState.strokeShape);
+            sheetManager.currentCanvas.getChildren().add(currentState.strokeShape);
     }
 
 

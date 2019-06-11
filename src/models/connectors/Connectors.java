@@ -3,6 +3,7 @@ package models.connectors;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import math.Vector2;
 import models.figures.Figure;
 import views.Observer;
 
@@ -42,5 +43,15 @@ public interface Connectors extends Serializable {
 
     Figure getFrom();
 
+    Vector2 getInterPoint();
+
+    Vector2 getVecTo();
+
+    Vector2 getVecFrom();
+
+    //as id
+    void setFigLayer(int Layer);
+
+    int getFigLayer();
 
 }
