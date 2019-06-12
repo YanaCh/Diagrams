@@ -8,8 +8,6 @@ import views.Observer;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import java.io.Serializable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "figure")
@@ -53,7 +51,7 @@ public interface Figure {
 
    void setFigParams();
 
-   void setText(Text text);
+   void setFigText(Text text);
 
    void recalculateFigParams(double newX, double newY, double newH, double newW );
 
@@ -78,5 +76,11 @@ public interface Figure {
    boolean isText();
 
    Figure getSource();
+
+   public String getFigText();
+
+   public CustomTextArea getCustomTextArea();
+
+   public void setText(String text);
 
 }

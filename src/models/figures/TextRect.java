@@ -3,10 +3,13 @@ package models.figures;
 import controllers.ControllerImpl;
 import controllers.CurrentState;
 import controllers.SheetManager;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import math.Vector3;
 import views.Observer;
 
 import java.io.Serializable;
@@ -16,8 +19,8 @@ public class TextRect extends Rectangle implements Figure, Serializable {
     protected double x,y,x1,y1, w, h, centerX, centerY;
     private double xText,yText,x1Text,y1Text, wText, hText;
     protected transient Color color;
-    private String colorRGB;
-    protected Text text;
+    private Vector3 colorRGB;
+    private String text;
     private int layer;
 
     private transient Observer observer;
@@ -77,9 +80,18 @@ public class TextRect extends Rectangle implements Figure, Serializable {
         customTextArea = new CustomTextArea(this.x + xText, this.y + yText,this.x1 - x1Text, this.y1 - y1Text, observer, this);
         sheetManager.currentTreeSet.add(customTextArea);
         customTextArea.setText("Text");
-        controller.setShape(customTextArea, text);
+        controller.setShape(customTextArea, new Text(""));
         customTextArea.setLayer(currentState.tempLayerVal);
         currentState.tempLayerVal++;
+
+        customTextArea.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                String temp = customTextArea.getText();
+                setFigText(new Text(customTextArea.getText()));
+                System.out.println("I am changed");
+            }
+        });
     }
 
 
@@ -124,11 +136,6 @@ public class TextRect extends Rectangle implements Figure, Serializable {
 
     }
 
-    public void deleteText(){
-        customTextArea.setDisable(true);
-        customTextArea.setVisible(false);
-        customTextArea = null;
-    }
 
     @Override
     public boolean isText() {
@@ -137,13 +144,24 @@ public class TextRect extends Rectangle implements Figure, Serializable {
 
 
     @Override
-    public void setText(Text text) {
-
+    public void setFigText(Text text) {
         if (customTextArea == null) return;
+        this.text = text.getText();
+    }
+
+    public void setText(String text){
+        if (customTextArea == null) return;
+        customTextArea.setText(text);
         this.text = text;
+    }
 
+    public String getFigText(){
+        return this.text;
+    }
 
+    public CustomTextArea getCustomTextArea() {
 
+        return customTextArea;
     }
     @Override
     public boolean isMouseInside(double mouseX, double mouseY) {
@@ -254,12 +272,20 @@ public class TextRect extends Rectangle implements Figure, Serializable {
 
     }
 
-    public static String toRGBCode( Color color )
+    public void setColorRGB(Vector3 colorRGB){
+        this.color = Color.rgb((int) colorRGB.getX(),(int)colorRGB.getY(),(int) colorRGB.getZ());
+        this.colorRGB = colorRGB;
+        setFill(color);
+        setStroke(color);
+
+    }
+
+    public Vector3 getColorRGB(){return colorRGB;}
+
+
+    public static Vector3 toRGBCode(Color color )
     {
-        return String.format( "#%02X%02X%02X",
-                (int)( color.getRed() * 255 ),
-                (int)( color.getGreen() * 255 ),
-                (int)( color.getBlue() * 255 ) );
+        return new Vector3(color.getRed() * 255,color.getGreen()* 255, color.getBlue()* 255);
     }
 
 

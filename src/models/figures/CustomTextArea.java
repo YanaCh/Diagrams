@@ -2,8 +2,11 @@ package models.figures;
 
 import controllers.CurrentState;
 import controllers.DragResizeMod;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -21,6 +24,7 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
 
     private double x,y,x1,y1, w, h, centerX, centerY;
     private int layer;
+    private String text;
 
     private Figure source;
 
@@ -30,6 +34,7 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
 
     private String cssScroll;
     private String cssGrey;
+    private String serializableText;
     public String cssTransparent;
 
 
@@ -127,6 +132,10 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
                 currentState.selectedTextArea = null;
 
         });
+
+
+
+
     }
 
 
@@ -151,7 +160,7 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
         setPrefWidth(w);
         setPrefHeight(h);
         setWrapText(true);
-        //setText("Text");
+        //setFigText("Text");
 
         //setFont(Font.font("Lucida Console", FontWeight.MEDIUM, 14));
         this.getStylesheets().add(cssScroll);
@@ -285,8 +294,23 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
 
 
     @Override
-    public void setText(Text text) {
-       // this.setText(text);
+    public void setFigText(Text text) {
+        serializableText = text.getText();
+
+
+    }
+
+    public String getFigText(){
+        return this.text;
+    }
+
+    @Override
+    public CustomTextArea getCustomTextArea() {
+        return null;
+    }
+
+    public String getSerializableText(){
+        return serializableText;
     }
 
     public void recalculateSize(double zoomFactor){
@@ -328,4 +352,6 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
     public void notifyChanges(){
         observer.update();
     }
+
+
 }

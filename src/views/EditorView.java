@@ -5,7 +5,6 @@ import controllers.*;
 import fileoperating.SaveFile;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -25,9 +24,7 @@ import javafx.stage.Stage;
 import models.ColorButton;
 import org.controlsfx.dialog.FontSelectorDialog;
 
-import javax.imageio.ImageIO;
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 
 
@@ -292,7 +289,7 @@ public class EditorView extends Application implements Observer , Serializable  
         makeXMl.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>()  {
             @Override
             public void handle(javafx.event.ActionEvent event) {
-                SaveFile saveFile = new SaveFile("Diagram.dat", EditorView.this);
+               // SaveFile saveFile = new SaveFile("Diagram.dat", EditorView.this);
 
             }
         });
@@ -316,7 +313,7 @@ public class EditorView extends Application implements Observer , Serializable  
                 if (file != null) {
 
 
-                      //  SaveFile saveFile = new SaveFile("Diagram.dat");
+                        SaveFile saveFile = new SaveFile(file,EditorView.this);
 
 
                 }

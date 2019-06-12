@@ -27,10 +27,10 @@ public class SaveFile {
     SheetManager sheetManager = SheetManager.getInstance();
     ControllerImpl controller = ControllerImpl.getInstance();
 
-    public SaveFile(String fileName, Observer observer) {
+    public SaveFile(File file, Observer observer) {
 
 
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("diagram.dat")))
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file)))
         {
             TreeSet<Figure> serializeTreeSet = sheetManager.currentTreeSet;
 
@@ -50,16 +50,15 @@ public class SaveFile {
             for (Iterator itr = p.descendingIterator(); itr.hasNext(); ) {
                 Figure fig = (Figure) itr.next();
                 Figure textFig;
-                Connectors connector;
-                ConnectorAdapter connectorAdapter;
-                MyLine line;
-                Arrow arrow;
-
 
                 if (fig instanceof TextRect) {
                     textFig = new TextRect(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(), observer);
                     resTreeSet.add(textFig);
+
                     controller.setShape(textFig, new Text(""));
+                    textFig.setText(fig.getFigText());
+                    resTreeSet.add(textFig.getCustomTextArea());
+                    ((TextRect) textFig).setColorRGB(((TextRect) fig).getColorRGB());
                     textFig.setLayer(fig.getLayer());
                 }
 
@@ -67,23 +66,23 @@ public class SaveFile {
                     textFig = new TextEllipse(((TextEllipse) fig).startingX, ((TextEllipse) fig).startingY
                             , ((TextEllipse) fig).startingX1, ((TextEllipse) fig).startingY1, observer);
                     resTreeSet.add(textFig);
+                    resTreeSet.add( textFig.getCustomTextArea());
                     controller.setShape(textFig, new Text(""));
+                    ((TextEllipse) textFig).setText(((TextEllipse) fig).getFigText());
+                    ((TextEllipse) textFig).setColorRGB(((TextEllipse) fig).getColorRGB());
                     textFig.setLayer(fig.getLayer());
                 }
 
                 if (fig instanceof ImageRect) {
                     textFig = new ImageRect(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(), observer);
                     resTreeSet.add(textFig);
+                    resTreeSet.add(textFig.getCustomTextArea());
                     controller.setShape(textFig, new Text(""));
+                    textFig.setText(fig.getFigText());
+                    ((ImageRect) textFig).setColorRGB(((ImageRect) fig).getColorRGB());
                     textFig.setLayer(fig.getLayer());
                 }
 
-                if (fig instanceof CustomTextArea) {
-                    textFig = new CustomTextArea(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(), observer, fig.getSource());
-                    resTreeSet.add(textFig);
-                    controller.setShape(textFig, new Text(""));
-                    textFig.setLayer(fig.getLayer());
-                }
             }
 
             for (Iterator itr = p.descendingIterator(); itr.hasNext(); ) {
@@ -113,6 +112,7 @@ public class SaveFile {
                         ConnectorAdapter connectorAdapter = new ConnectorAdapter(connector);
                         resTreeSet.add(connectorAdapter);
                         controller.setShape(connectorAdapter, new Text(""));
+                        connector.setLayer(fig.getLayer());
 
                     }
 
@@ -137,12 +137,11 @@ public class SaveFile {
                         ConnectorAdapter connectorAdapter = new ConnectorAdapter(connector);
                         resTreeSet.add(connectorAdapter);
                         controller.setShape(connectorAdapter, new Text(""));
+                        connector.setLayer(fig.getLayer());
 
                     }
 
                     }
-
-
 
 
 
@@ -153,6 +152,8 @@ public class SaveFile {
 
             System.out.printf("X1: %s \t X2: %s \n", p.first().getFigX1(), p.first().getFigY1());
             Sheet sheet = (Sheet) sheetManager.tabPane.getTabs().get(2);
+            if(sheet.equals(sheetManager.currentSheet))
+                sheet = (Sheet) sheetManager.tabPane.getTabs().get(1);
             sheetManager.tabPane.getSelectionModel().select(sheet);
             sheetManager.currentSheet = sheet;
             sheet.treeSet = resTreeSet;

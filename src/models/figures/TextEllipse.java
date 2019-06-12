@@ -3,10 +3,13 @@ package models.figures;
 import controllers.ControllerImpl;
 import controllers.CurrentState;
 import controllers.SheetManager;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.text.Text;
+import math.Vector3;
 import views.Observer;
 
 import java.io.Serializable;
@@ -17,9 +20,9 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
     public double startingX, startingY, startingX1, startingY1;
     //A2(x,y),B2(x2,y2) vertices of the to
     private double  wText, hText;
-    private Text text;
+    private String text;
     private transient Color color;
-    private String colorRGB;
+    private Vector3 colorRGB;
     private int layer;
 
     private transient Observer observer;
@@ -55,6 +58,7 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
         startingX1 = x1;
         startingY1 = y1;
 
+
         this.centerX = (x + x1)/2;
         this.centerY = (y + y1)/2;
         this.radiusX =  Math.abs((x1 - x)/2);
@@ -80,17 +84,22 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
         customTextArea.setLayer(currentState.tempLayerVal);
         currentState.tempLayerVal++;
 
+        customTextArea.setOnKeyTyped(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                String temp = customTextArea.getText();
+                setFigText(new Text(customTextArea.getText()));
+                System.out.println("I am changed");
+            }
+        });
 
 
     }
 
 
-    public static String toRGBCode( Color color )
+    public static Vector3 toRGBCode(Color color )
     {
-        return String.format( "#%02X%02X%02X",
-                (int)( color.getRed() * 255 ),
-                (int)( color.getGreen() * 255 ),
-                (int)( color.getBlue() * 255 ) );
+        return new Vector3(color.getRed() * 255,color.getGreen()* 255, color.getBlue()* 255);
     }
 
      @Override
@@ -120,6 +129,12 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
         y = centerY;
         x1 = centerX;
         y1 = -radiusY + centerY;
+
+        startingX = x;
+        startingX1 = 2 * centerX - startingX;
+        startingY = y1;
+        startingY1 = 2 * centerY - startingY;
+
 
         /*x =newX;
         y = newY;
@@ -216,6 +231,16 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
     return color;
    }
 
+   public Vector3 getColorRGB(){return colorRGB;}
+
+   public void setColorRGB(Vector3 colorRGB){
+        this.color = Color.rgb((int) colorRGB.getX(),(int)colorRGB.getY(),(int) colorRGB.getZ());
+        this.colorRGB = colorRGB;
+        setFill(color);
+        setStroke(color);
+
+   }
+
    @Override
    public void setFigColor(Color color) {
        this.color = color;
@@ -227,9 +252,24 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
     }
 
     @Override
-    public void setText(Text text) {
+    public void setFigText(Text text) {
         if (customTextArea == null) return;
+        this.text = text.getText();
+    }
+
+    public void setText(String text){
+        if (customTextArea == null) return;
+        customTextArea.setText(text);
         this.text = text;
+    }
+
+    public String getFigText(){
+        return this.text;
+    }
+
+    public CustomTextArea getCustomTextArea() {
+
+        return customTextArea;
     }
 
     public void recalculateSize(double zoomFactor){
