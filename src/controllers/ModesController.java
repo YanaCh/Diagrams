@@ -262,7 +262,7 @@ public class ModesController extends BaseEventHandler implements Serializable {
                             break;
                         }
                     }
-                    if(to!=null && to != from && from != null && to.getType() == 2) {
+                    if(to!=null && to != from && from != null && to.getType() == 2 ) {
                         Vector2 interP = GeomCalculations.interactionPointsWithEllipse(startDrag,
                                 endDrag, (TextEllipse) to);
                         Arrow arrow = new Arrow(startDrag.getX(), startDrag.getY(),

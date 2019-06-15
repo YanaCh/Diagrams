@@ -4,6 +4,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import math.Vector2;
+import math.Vector3;
 import models.figures.Figure;
 import views.Observer;
 
@@ -53,5 +54,15 @@ public interface Connectors extends Serializable {
     void setFigLayer(int Layer);
 
     int getFigLayer();
+
+    public void setColorRGB(Vector3 colorRGB);
+
+    public Vector3 getColorRGB();
+
+    public String getText();
+
+    public void setTextContent(String textContent);
+
+
 
 }

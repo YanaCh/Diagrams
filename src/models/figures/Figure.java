@@ -3,6 +3,7 @@ package models.figures;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import math.Vector3;
 import views.Observer;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -82,5 +83,9 @@ public interface Figure {
    public CustomTextArea getCustomTextArea();
 
    public void setText(String text);
+
+   public void setColorRGB(Vector3 colorRGB);
+
+   public Vector3 getColorRGB();
 
 }

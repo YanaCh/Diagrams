@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import math.Vector2;
+import math.Vector3;
 import views.Observer;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
@@ -306,6 +307,16 @@ public class CustomTextArea extends TextArea implements Figure, Serializable {
 
     @Override
     public CustomTextArea getCustomTextArea() {
+        return null;
+    }
+
+    @Override
+    public void setColorRGB(Vector3 colorRGB) {
+
+    }
+
+    @Override
+    public Vector3 getColorRGB() {
         return null;
     }
 

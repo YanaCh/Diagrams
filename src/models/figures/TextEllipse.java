@@ -97,7 +97,7 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
     }
 
 
-    public static Vector3 toRGBCode(Color color )
+    public Vector3 toRGBCode(Color color )
     {
         return new Vector3(color.getRed() * 255,color.getGreen()* 255, color.getBlue()* 255);
     }
@@ -264,7 +264,7 @@ public class TextEllipse extends Ellipse implements Figure, Serializable {
     }
 
     public String getFigText(){
-        return this.text;
+        return text;
     }
 
     public CustomTextArea getCustomTextArea() {

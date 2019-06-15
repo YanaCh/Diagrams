@@ -4,6 +4,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import math.Vector2;
+import math.Vector3;
 import models.figures.CustomTextArea;
 import models.figures.Figure;
 import views.Observer;
@@ -109,7 +110,7 @@ public class ConnectorAdapter implements Figure, Serializable {
 
     @Override
     public String getFigText() {
-        return null;
+        return connector.getText();
     }
 
     @Override
@@ -120,6 +121,16 @@ public class ConnectorAdapter implements Figure, Serializable {
     @Override
     public void setText(String text) {
 
+    }
+
+    @Override
+    public void setColorRGB(Vector3 colorRGB) {
+        connector.setColorRGB(colorRGB);
+    }
+
+    @Override
+    public Vector3 getColorRGB() {
+        return connector.getColorRGB();
     }
 
     @Override
@@ -230,5 +241,9 @@ public class ConnectorAdapter implements Figure, Serializable {
 
     public void setFigLayer(int layer){
        connector.setFigLayer(layer);
+    }
+
+    public void setTextContent(String textContent){
+        connector.setTextContent(textContent);
     }
 }

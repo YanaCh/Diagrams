@@ -54,8 +54,8 @@ public class ControllerImpl implements Serializable {
     private void doShapeSetting(Figure figure, Text text){
         figure.registerObserver(observer);
         figure.setFigColor(observer.getMultiColorButton().getValue());
+        figure.setFigText(text);
         figure.setFigParams();
-       // figure.setFigText(text);
         //figure.setLayer(currentState.tempLayerVal);
        // currentState.tempLayerVal++;
 

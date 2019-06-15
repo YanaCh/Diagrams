@@ -1,14 +1,17 @@
 package fileoperating;
 
 import controllers.ControllerImpl;
+import controllers.ModesController;
 import controllers.SheetManager;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import models.connectors.ConnectorAdapter;
 import models.connectors.Connectors;
 import models.connectors.MyLine;
 import models.connectors.arrow.Arrow;
 import models.figures.*;
+import views.EditorView;
 import views.FigureComparator;
 import views.Observer;
 import views.Sheet;
@@ -27,7 +30,7 @@ public class SaveFile {
     SheetManager sheetManager = SheetManager.getInstance();
     ControllerImpl controller = ControllerImpl.getInstance();
 
-    public SaveFile(File file, Observer observer) {
+    public SaveFile(File file) {
 
 
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file)))
@@ -42,7 +45,11 @@ public class SaveFile {
         }
 
 
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream("diagram.dat")))
+
+    }
+
+    public SaveFile(File file, Observer observer, ModesController modesController, VBox container){
+        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file)))
         {
             TreeSet<Figure> p=(TreeSet<Figure>)ois.readObject();
             TreeSet<Figure> resTreeSet = new TreeSet<Figure>(new FigureComparator());
@@ -66,12 +73,13 @@ public class SaveFile {
                     textFig = new TextEllipse(((TextEllipse) fig).startingX, ((TextEllipse) fig).startingY
                             , ((TextEllipse) fig).startingX1, ((TextEllipse) fig).startingY1, observer);
                     resTreeSet.add(textFig);
-                    resTreeSet.add( textFig.getCustomTextArea());
+
                     controller.setShape(textFig, new Text(""));
-                    ((TextEllipse) textFig).setText(((TextEllipse) fig).getFigText());
-                    ((TextEllipse) textFig).setColorRGB(((TextEllipse) fig).getColorRGB());
+                    textFig.setText(fig.getFigText());
+                    resTreeSet.add( textFig.getCustomTextArea());
+                    textFig.setColorRGB(fig.getColorRGB());
                     textFig.setLayer(fig.getLayer());
-                }
+               }
 
                 if (fig instanceof ImageRect) {
                     textFig = new ImageRect(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(), observer);
@@ -90,7 +98,7 @@ public class SaveFile {
 
                 if(fig instanceof ConnectorAdapter){
 
-                   Connectors connector = ((ConnectorAdapter) fig).getConnector();
+                    Connectors connector = ((ConnectorAdapter) fig).getConnector();
 
                     if(connector instanceof MyLine) {
 
@@ -112,6 +120,7 @@ public class SaveFile {
                         ConnectorAdapter connectorAdapter = new ConnectorAdapter(connector);
                         resTreeSet.add(connectorAdapter);
                         controller.setShape(connectorAdapter, new Text(""));
+                        connector.setColorRGB(fig.getColorRGB());
                         connector.setLayer(fig.getLayer());
 
                     }
@@ -131,17 +140,21 @@ public class SaveFile {
                                 to = figure;
 
                         }
+                        if(to instanceof TextEllipse) {
 
-                        connector = new Arrow(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(), ((ConnectorAdapter) fig).getInterPoint(),
-                                from, (TextEllipse) to);
-                        ConnectorAdapter connectorAdapter = new ConnectorAdapter(connector);
-                        resTreeSet.add(connectorAdapter);
-                        controller.setShape(connectorAdapter, new Text(""));
-                        connector.setLayer(fig.getLayer());
+                            connector = new Arrow(fig.getFigX(), fig.getFigY(), fig.getFigX1(), fig.getFigY1(), ((ConnectorAdapter) fig).getInterPoint(),
+                                    from, (TextEllipse) to);
+                            ConnectorAdapter connectorAdapter = new ConnectorAdapter(connector);
+                            resTreeSet.add(connectorAdapter);
+                            controller.setShape(connectorAdapter, new Text(""));
+                            connectorAdapter.setTextContent(fig.getFigText());
+                            connector.setColorRGB(fig.getColorRGB());
+                            connector.setLayer(fig.getLayer());
+                        }
 
                     }
 
-                    }
+                }
 
 
 
@@ -151,19 +164,19 @@ public class SaveFile {
 
 
             System.out.printf("X1: %s \t X2: %s \n", p.first().getFigX1(), p.first().getFigY1());
-            Sheet sheet = (Sheet) sheetManager.tabPane.getTabs().get(2);
-            if(sheet.equals(sheetManager.currentSheet))
-                sheet = (Sheet) sheetManager.tabPane.getTabs().get(1);
-            sheetManager.tabPane.getSelectionModel().select(sheet);
-            sheetManager.currentSheet = sheet;
+            Sheet sheet = new Sheet(container, file.getName(),modesController);
+            sheetManager.tabPane.getTabs().add(sheet);
+            sheetManager.sheetArrayList.add(sheet);
+            //Sheet sheet = (Sheet) sheetManager.tabPane.getTabs().get(2);
+           // if(sheet.equals(sheetManager.currentSheet))
+            //   sheet = (Sheet) sheetManager.tabPane.getTabs().get(1);
             sheet.treeSet = resTreeSet;
-            sheetManager.currentTreeSet = resTreeSet;
-            sheetManager.currentCanvas = sheet.canvas;
-            observer.update();
+            //sheetManager.tabPane.getSelectionModel().select(sheet);
+
         }
         catch(Exception ex){
 
-            System.out.println(ex.getMessage());
+            System.out.println(ex);
         }
     }
 

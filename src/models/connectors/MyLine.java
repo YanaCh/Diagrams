@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import math.Vector2;
+import math.Vector3;
 import models.figures.Figure;
 import views.Observer;
 
@@ -17,10 +18,10 @@ public class MyLine extends Line implements Connectors, Serializable {
     private Figure from;
     private Figure to; // 2 recs, from one to another
     private transient Color color;
-    private String colorRGB;
+    private Vector3 colorRGB;
     private  Vector2 vecTo;
     private  Vector2 vecFrom;
-    private  Text text;
+    private transient Text text;
     private int layer;
     private int figLayer;
 
@@ -78,12 +79,28 @@ public class MyLine extends Line implements Connectors, Serializable {
     }
 
 
-    public static String toRGBCode( Color color )
+    public  Vector3 toRGBCode(Color color )
     {
-        return String.format( "#%02X%02X%02X",
-                (int)( color.getRed() * 255 ),
-                (int)( color.getGreen() * 255 ),
-                (int)( color.getBlue() * 255 ) );
+        return new Vector3(color.getRed() * 255,color.getGreen()* 255, color.getBlue()* 255);
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+        colorRGB = toRGBCode(color);
+
+    }
+
+    public Color getFigColor() {
+        return color;
+    }
+
+    public Vector3 getColorRGB(){return colorRGB;}
+
+    public void setColorRGB(Vector3 colorRGB){
+        this.color = Color.rgb((int) colorRGB.getX(),(int)colorRGB.getY(),(int) colorRGB.getZ());
+        this.colorRGB = colorRGB;
+        setStroke(color);
+
     }
 
 
@@ -107,7 +124,7 @@ public class MyLine extends Line implements Connectors, Serializable {
         }
 
         try {
-           // text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
+            //text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
            // text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
         }
 
@@ -119,6 +136,14 @@ public class MyLine extends Line implements Connectors, Serializable {
         }
     }
 
+    public String getText(){
+        return null;
+    }
+
+    public void setTextContent(String textContent){
+
+    }
+
 
     public void recalculate(){
         x = from.getCenterX() - vecFrom.getX();
@@ -128,11 +153,6 @@ public class MyLine extends Line implements Connectors, Serializable {
     }
 
 
-    public void setColor(Color color) {
-        this.color = color;
-        colorRGB = toRGBCode(color);
-
-    }
 
     public void setText(Text text){
         this.text = text;

@@ -273,7 +273,7 @@ public class ImageRect extends ImageView implements Figure, Serializable {
 
     public Vector3 getColorRGB(){return colorRGB;}
 
-    public static Vector3 toRGBCode(Color color )
+    public Vector3 toRGBCode(Color color )
     {
         return new Vector3(color.getRed() * 255,color.getGreen()* 255, color.getBlue()* 255);
     }

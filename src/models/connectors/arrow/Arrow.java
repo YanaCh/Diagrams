@@ -1,14 +1,24 @@
 package models.connectors.arrow;
 
+import controllers.ControllerImpl;
+import controllers.CurrentState;
+import controllers.SheetManager;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import math.GeomCalculations;
 import math.Vector2;
+import math.Vector3;
+import models.connectors.ConnectorAdapter;
 import models.connectors.Connectors;
+import models.figures.CustomTextArea;
 import models.figures.Figure;
 import models.figures.TextEllipse;
 import views.Observer;
@@ -21,22 +31,25 @@ public class Arrow extends Group implements Connectors, Serializable {
    private Vector2 interPoint;
    private Vector2 vecTo;
    private Vector2 vecFrom;
-   private Text text;
+   private String textContent;
+   private transient Text text;
    private transient Line line;
    private transient Line arrow1;
    private transient Line arrow2;
    private TextEllipse to;
    private Figure from;
    private transient Color color;
-   private String colorRGB;
+   private Vector3 colorRGB;
    private int layer;
-    private int figLayer;
+   private int figLayer;
+
 
    private transient ArrowCalculations arrowCalculations;
 
    private int count = 0;
 
    private transient Observer observer;
+
 
    public Arrow(double x, double y, double x1, double y1){
 
@@ -94,6 +107,9 @@ public class Arrow extends Group implements Connectors, Serializable {
        arrowCalculations = new ReleasedArrow(this);
        arrowCalculations.calculate();
 
+
+
+
    }
 
     @Override
@@ -114,12 +130,25 @@ public class Arrow extends Group implements Connectors, Serializable {
     }
 
 
-    public static String toRGBCode( Color color )
+    public  Vector3 toRGBCode(Color color )
     {
-        return String.format( "#%02X%02X%02X",
-                (int)( color.getRed() * 255 ),
-                (int)( color.getGreen() * 255 ),
-                (int)( color.getBlue() * 255 ) );
+        return new Vector3(color.getRed() * 255,color.getGreen()* 255, color.getBlue()* 255);
+    }
+
+
+    public Color getFigColor() {
+        return color;
+    }
+
+    public Vector3 getColorRGB(){return colorRGB;}
+
+    public void setColorRGB(Vector3 colorRGB){
+        this.color = Color.rgb((int) colorRGB.getX(),(int)colorRGB.getY(),(int) colorRGB.getZ());
+        this.colorRGB = colorRGB;
+        line.setStroke(color);
+        arrow1.setStroke(color);
+        arrow2.setStroke(color);
+
     }
 
     public void setColor(Color c){
@@ -132,6 +161,17 @@ public class Arrow extends Group implements Connectors, Serializable {
 
     public void setText(Text text){
        this.text = text;
+       this.textContent = text.getText();
+    }
+
+    public void setTextContent(String textContent){
+        this.textContent = textContent;
+        this.text.setText(textContent);
+        setConParams();
+    }
+
+    public String getText(){
+       return textContent;
     }
 
     public void setLineParams(){
@@ -188,8 +228,10 @@ public class Arrow extends Group implements Connectors, Serializable {
 
             }
             try {
-                //text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
-               // text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
+                text.setX((x + x1 - text.getLayoutBounds().getWidth()*2)/2);
+                text.setY((y + y1 - text.getLayoutBounds().getHeight())/2);
+                text.setFont(Font.font("Lucida Console", FontWeight.MEDIUM, 14));
+
             }
 
             catch (NullPointerException e){
@@ -244,7 +286,7 @@ public class Arrow extends Group implements Connectors, Serializable {
 
     @Override
     public void addShape(Pane canvas) {
-        canvas.getChildren().add(this);
+        canvas.getChildren().addAll(this,text);
     }
 
     @Override

@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
@@ -65,8 +66,9 @@ public class EditorView extends Application implements Observer , Serializable  
         MenuItem close = new MenuItem("Close");
         MenuItem save = new MenuItem("Save");
         MenuItem saveAs = new MenuItem("Save as...");
+        MenuItem open = new MenuItem("Open");
         MenuItem exit = new MenuItem("Exit");
-        fileMenu.getItems().addAll(close, save, saveAs, new SeparatorMenuItem(), exit);
+        fileMenu.getItems().addAll(open,close, save, saveAs, new SeparatorMenuItem(), exit);
         Menu helpMenu = new Menu("Help");
         MenuItem about = new MenuItem("About");
         helpMenu.getItems().add(about);
@@ -101,8 +103,6 @@ public class EditorView extends Application implements Observer , Serializable  
 
 
         splitPane.getItems().add(toolButtonBar);
-
-        VBox vBox = new VBox();
 
 
         ToolBar toolColorBar = new ToolBar();
@@ -158,29 +158,34 @@ public class EditorView extends Application implements Observer , Serializable  
         blackButton.setPrefWidth(25);
         blackButton.setPrefHeight(25);
 
-
-        toolColorBar.getItems().addAll(fontButton, multiColorButton,blackButton,whiteButton,blueButton,magentaButton,cyanButton,greenButton,
-                yellowButton,orangeButton,redButton);
-        Insets insetsColor = new Insets(10,15, 10, 20);
-        toolColorBar.setPadding(insetsColor);
-
-        vBox.getChildren().add(toolColorBar);
-
         plusButton = new JFXButton("➕");
         plusButton.setFont(Font.font("Segoi UI Black", FontWeight.BOLD,18));
         plusButton.setButtonType(JFXButton.ButtonType.RAISED);
         plusButton.getStylesheets().add(getClass().getResource("/css/PlusButton.css").toExternalForm());
         plusButton.getStyleClass().addAll("animated-option-button");
 
+        toolColorBar.getItems().addAll(plusButton,fontButton, multiColorButton,blackButton,whiteButton,blueButton,magentaButton,cyanButton,greenButton,
+                yellowButton,orangeButton,redButton);
+        Insets insetsColor = new Insets(10,15, 10, 20);
+        toolColorBar.setPadding(insetsColor);
+        VBox vBox = new VBox();
+
+        vBox.getChildren().add(toolColorBar);
+
 
         tab =  new Sheet(vBox, "sheet 1", modesController);
-        sheetManager.currentSheet = tab;
+       // sheetManager.currentSheet = tab;
+       // sheetManager.currentCanvas = tab.canvas;
 
         Sheet tab1 = new Sheet(vBox, "sheet 2", modesController);
         Sheet tab3 = new Sheet(vBox, "sheet 3", modesController);
 
         sheetManager.tabPane.setSide(Side.TOP);
         sheetManager.tabPane.getTabs().addAll(tab, tab1, tab3);
+        sheetManager.sheetArrayList.add(tab);
+        sheetManager.sheetArrayList.add(tab1);
+        sheetManager.sheetArrayList.add(tab3);
+
 
         sheetManager.tabPane.getTabs().stream().forEach(node->{
 
@@ -229,6 +234,16 @@ public class EditorView extends Application implements Observer , Serializable  
         blackButton.setOnAction(colorController);
 
 
+        plusButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Sheet sheet = new Sheet(vBox, "Sheet",modesController);
+                sheetManager.tabPane.getTabs().add(sheet);
+                sheetManager.sheetArrayList.add(sheet);
+                //sheetManager.tabPane.getSelectionModel().select(sheet);
+                update();
+            }
+        });
 
         btnUseCase.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
             @Override
@@ -300,6 +315,24 @@ public class EditorView extends Application implements Observer , Serializable  
                 Platform.exit();
             }
         });
+        open.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(javafx.event.ActionEvent event) {
+                FileChooser fc = new FileChooser();
+                fc.setTitle("Save Diagram");
+                fc.getExtensionFilters().addAll(
+                        new FileChooser.ExtensionFilter("All Files", "*.*"), //
+                        new FileChooser.ExtensionFilter("DAT", "*.dat"));
+                File file = fc.showOpenDialog(primaryStage);
+                if (file != null) {
+
+
+                    SaveFile saveFile = new SaveFile(file,EditorView.this, modesController, vBox);
+
+
+                }
+            }
+        });
 
         saveAs.setOnAction(new javafx.event.EventHandler<javafx.event.ActionEvent>() {
             @Override
@@ -313,7 +346,7 @@ public class EditorView extends Application implements Observer , Serializable  
                 if (file != null) {
 
 
-                        SaveFile saveFile = new SaveFile(file,EditorView.this);
+                        SaveFile saveFile = new SaveFile(file);
 
 
                 }
@@ -359,6 +392,8 @@ public class EditorView extends Application implements Observer , Serializable  
 
 
 
+
+
     private void accessScrollBar(ScrollPane scrollPane) {
         for (Node node : scrollPane.lookupAll(".scroll-bar")) {
             if (node instanceof ScrollBar) {
@@ -382,7 +417,6 @@ public class EditorView extends Application implements Observer , Serializable  
             }
         }
     }
-
 
 
 
