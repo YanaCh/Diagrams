@@ -6,8 +6,9 @@
       <root url="jar://$PROJECT_DIR$/../jar_files/javafx-controls-11.jar!/" />
       <root url="jar://$PROJECT_DIR$/../jar_files/javafx-graphics-11.jar!/" />
       <root url="file://$PROJECT_DIR$/../jar_files" />
-      <root url="jar://$PROJECT_DIR$/../controlsfx-8.40.12/controlsfx-8.40.12.jar!/" />
       <root url="jar://$PROJECT_DIR$/../jfoenix-9.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../controlsfx-8.40.12/controlsfx-8.40.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../TrayTester.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

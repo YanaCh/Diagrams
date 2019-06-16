@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -17,15 +18,23 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import models.ColorButton;
+import org.controlsfx.control.Notifications;
 import org.controlsfx.dialog.FontSelectorDialog;
+import tray.animations.AnimationType;
+import tray.notification.NotificationType;
+import tray.notification.TrayNotification;
 
+import javax.management.Notification;
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 
 
@@ -180,7 +189,7 @@ public class EditorView extends Application implements Observer , Serializable  
         Sheet tab1 = new Sheet(vBox, "sheet 2", modesController);
         Sheet tab3 = new Sheet(vBox, "sheet 3", modesController);
 
-        sheetManager.tabPane.setSide(Side.TOP);
+
         sheetManager.tabPane.getTabs().addAll(tab, tab1, tab3);
         sheetManager.sheetArrayList.add(tab);
         sheetManager.sheetArrayList.add(tab1);
@@ -321,13 +330,29 @@ public class EditorView extends Application implements Observer , Serializable  
                 FileChooser fc = new FileChooser();
                 fc.setTitle("Save Diagram");
                 fc.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("All Files", "*.*"), //
                         new FileChooser.ExtensionFilter("DAT", "*.dat"));
                 File file = fc.showOpenDialog(primaryStage);
                 if (file != null) {
 
+                    try {
+                        SaveFile saveFile = new SaveFile(file,EditorView.this, modesController, vBox);
 
-                    SaveFile saveFile = new SaveFile(file,EditorView.this, modesController, vBox);
+                        NotificationType notification = NotificationType.SUCCESS;
+                        TrayNotification tray = new TrayNotification("File opened", file.toString(), notification);
+                        tray.setAnimationType(AnimationType.POPUP);
+                        tray.setRectangleFill(Paint.valueOf("#43BFC7"));
+                        tray.showAndDismiss(Duration.seconds(5));
+
+                    }
+
+                    catch (Exception e){
+
+                        NotificationType notification = NotificationType.ERROR;
+                        TrayNotification tray = new TrayNotification("File was not opened", "Something went wrong", notification);
+                        tray.setAnimationType(AnimationType.POPUP);
+                        tray.setRectangleFill(Paint.valueOf("#43BFC7"));
+                        tray.showAndDismiss(Duration.seconds(5));
+                    }
 
 
                 }
@@ -340,13 +365,33 @@ public class EditorView extends Application implements Observer , Serializable  
                 FileChooser fc = new FileChooser();
                 fc.setTitle("Save Diagram");
                 fc.getExtensionFilters().addAll(
-                        new FileChooser.ExtensionFilter("All Files", "*.*"), //
                         new FileChooser.ExtensionFilter("DAT", "*.dat"));
                 File file = fc.showSaveDialog(primaryStage);
                 if (file != null) {
-
-
+                    try {
                         SaveFile saveFile = new SaveFile(file);
+
+                        NotificationType notification = NotificationType.SUCCESS;
+                        TrayNotification tray = new TrayNotification("File saved", file.toString(), notification);
+                        tray.setAnimationType(AnimationType.POPUP);
+                        tray.setRectangleFill(Paint.valueOf("#43BFC7"));
+                        tray.showAndDismiss(Duration.seconds(5));
+
+                    }
+
+
+                    catch (IOException e){
+
+                        NotificationType notification = NotificationType.ERROR;
+                        TrayNotification tray = new TrayNotification("File was not saved", "Something went wrong", notification);
+                        tray.setAnimationType(AnimationType.POPUP);
+                        tray.setRectangleFill(Paint.valueOf("#43BFC7"));
+                        tray.showAndDismiss(Duration.seconds(5));
+
+                    }
+
+
+
 
 
                 }

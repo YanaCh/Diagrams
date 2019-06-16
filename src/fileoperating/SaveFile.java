@@ -30,27 +30,24 @@ public class SaveFile {
     SheetManager sheetManager = SheetManager.getInstance();
     ControllerImpl controller = ControllerImpl.getInstance();
 
-    public SaveFile(File file) {
+    public SaveFile(File file) throws IOException{
 
 
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file)))
-        {
+
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
             TreeSet<Figure> serializeTreeSet = sheetManager.currentTreeSet;
 
             oos.writeObject(serializeTreeSet);
-        }
-        catch(Exception ex){
 
-            System.out.println(ex.getMessage());
-        }
+
 
 
 
     }
 
-    public SaveFile(File file, Observer observer, ModesController modesController, VBox container){
-        try(ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file)))
-        {
+    public SaveFile(File file, Observer observer, ModesController modesController, VBox container) throws IOException, ClassNotFoundException{
+       ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+
             TreeSet<Figure> p=(TreeSet<Figure>)ois.readObject();
             TreeSet<Figure> resTreeSet = new TreeSet<Figure>(new FigureComparator());
 
@@ -173,11 +170,8 @@ public class SaveFile {
             sheet.treeSet = resTreeSet;
             //sheetManager.tabPane.getSelectionModel().select(sheet);
 
-        }
-        catch(Exception ex){
 
-            System.out.println(ex);
-        }
+
     }
 
 }
